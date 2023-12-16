@@ -4,40 +4,49 @@ using UnityEngine;
 
 public class Movement : MonoBehaviour
 {
-    [SerializeField] float moveMult;
-    [SerializeField] float jumpMult;
-    [SerializeField] Rigidbody body;
+    [SerializeField, Range(0f, 100f)] float maxSpeed = 10f;
+    [SerializeField, Range(0f, 100f)] float maxAcceleration = 10f;
+    [SerializeField] Transform playerInputSpace;
+
+    Vector3 velocity, desiredVelocity;
+    Rigidbody body;
 
     private void Start()
     {
-        
+        body = GetComponent<Rigidbody>();
     }
 
-    private void Update()
+    void Update()
     {
-        if (Input.GetKey(KeyCode.W))
-        {
-            transform.position += transform.forward * moveMult * Time.deltaTime;
-        }
+        Vector2 playerInput;
 
-        if (Input.GetKey(KeyCode.S))
-        {
-            transform.position -= transform.forward * moveMult * Time.deltaTime;
-        }
+        playerInput.x = Input.GetAxis("Horizontal");
+        playerInput.y = Input.GetAxis("Vertical");
+        playerInput = Vector2.ClampMagnitude(playerInput, 1f);
 
-        if (Input.GetKey(KeyCode.D))
+        if (playerInputSpace)
         {
-            transform.position += transform.right * moveMult * Time.deltaTime;
-        }
+            Vector3 forward = playerInputSpace.forward;
+            forward.y = 0f;
+            forward.Normalize();
 
-        if (Input.GetKey(KeyCode.A))
-        {
-            transform.position -= transform.right * moveMult * Time.deltaTime;
-        }
+            Vector3 right = playerInputSpace.right;
+            right.y = 0f;
+            right.Normalize();
 
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            body.AddForce(transform.up * jumpMult, ForceMode.VelocityChange);
+            desiredVelocity = (forward * playerInput.y + right * playerInput.x) * maxSpeed;
+
         }
+    }
+
+    private void FixedUpdate()
+    {
+        velocity = body.velocity;
+        float maxSpeedChange = maxAcceleration * Time.deltaTime;
+
+        velocity.x = Mathf.MoveTowards(velocity.x, desiredVelocity.x, maxSpeedChange);
+        velocity.z = Mathf.MoveTowards(velocity.z, desiredVelocity.z, maxSpeedChange);
+
+        body.velocity = velocity;
     }
 }
