@@ -1,15 +1,19 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 
 public class Movement : MonoBehaviour
 {
     [SerializeField, Range(0f, 100f)] float maxSpeed = 10f;
     [SerializeField, Range(0f, 100f)] float maxAcceleration = 10f;
+    [SerializeField] float jumpHeight;
     [SerializeField] Transform playerInputSpace;
 
-    Vector3 velocity, desiredVelocity;
+    Vector3 velocity, desiredVelocity, upAxis;
     Rigidbody body;
+    int stepsSinceLastGrounded;
+    bool onGround, desiredJump;
 
     private void Start()
     {
@@ -19,6 +23,8 @@ public class Movement : MonoBehaviour
     void Update()
     {
         Vector2 playerInput;
+
+        desiredJump = Input.GetButtonDown("Jump");
 
         playerInput.x = Input.GetAxis("Horizontal");
         playerInput.y = Input.GetAxis("Vertical");
@@ -41,12 +47,36 @@ public class Movement : MonoBehaviour
 
     private void FixedUpdate()
     {
+        upAxis = -Physics.gravity.normalized;
+
         velocity = body.velocity;
         float maxSpeedChange = maxAcceleration * Time.deltaTime;
 
         velocity.x = Mathf.MoveTowards(velocity.x, desiredVelocity.x, maxSpeedChange);
         velocity.z = Mathf.MoveTowards(velocity.z, desiredVelocity.z, maxSpeedChange);
 
+        if (desiredJump)
+        {
+            desiredJump = false;
+            Jump();
+        }
+
         body.velocity = velocity;
+    }
+
+    void Jump()
+    {
+        velocity.y += 5;
+    }
+
+    void UpdateState()
+    {
+        stepsSinceLastGrounded += 1;
+        velocity = body.velocity;
+        if (onGround)
+        {
+            stepsSinceLastGrounded = 0;
+            //jumpPhase = 0;
+        }
     }
 }

@@ -511,7 +511,7 @@ CapsuleCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1078829121}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: e710148618cf10047bd2138320d1fd74, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
   m_Radius: 0.5
@@ -564,6 +564,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxSpeed: 15
   maxAcceleration: 80
+  jumpHeight: 0
   playerInputSpace: {fileID: 2021698202}
 --- !u!111 &1078829128
 Animation:
@@ -681,7 +682,7 @@ MonoBehaviour:
   focusRadius: 0
   focusCentering: 0
   distance: 5
-  rotationSpeed: 180
+  rotationSpeed: 220
   minVerticalAngle: -89
   maxVerticalAngle: 89
   obstructionMask:
