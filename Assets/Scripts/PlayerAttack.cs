@@ -1,17 +1,22 @@
+using OpenCover.Framework.Model;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class PlayerAttack : MonoBehaviour
 {
-    [SerializeField] float attackCD = 0.4f;
+    [SerializeField] float attackCD, setCD, comboResetAfter;
     [SerializeField] float knockbackForward, knockbackUp;
+    [SerializeField] int weaponDamage;
     [SerializeField] GameObject player;
+    [SerializeField] TMP_Text comboText;
 
     public bool canAttack;
-    float combo;
-    float maxCombo = 4f;
-    float playerNegativeZ;
+    public int combo;
+    int maxCombo = 5;
+    public float comboResetTimer;
+    Vector3 playerOpposite;
 
     List<GameObject> enemiesInRange = new List<GameObject>();
 
@@ -19,16 +24,17 @@ public class PlayerAttack : MonoBehaviour
     {
         GetComponent<Collider>();
         canAttack = true;
+
+        combo = 0;
+        comboResetTimer = 5;
     }
 
     private void Update()
     {
         Timers();
+        UpdateUI();
 
-        playerNegativeZ = player.transform.rotation.y;
-        knockbackForward = -playerNegativeZ;
-        knockbackForward *= 5f;
-
+        playerOpposite = player.transform.forward;
 
         if (Input.GetKey(KeyCode.Mouse0) && canAttack || Input.GetKeyDown(KeyCode.Mouse0) && canAttack)
         {
@@ -58,16 +64,40 @@ public class PlayerAttack : MonoBehaviour
 
     void SwingAttack()
     {
-        combo++;
-
-        foreach (GameObject enemy in enemiesInRange)
+        if (enemiesInRange.Count > 0)
         {
-            Rigidbody rb = enemy.GetComponent<Rigidbody>();
-
-            rb.AddForce(0, knockbackUp, knockbackForward, ForceMode.Impulse);
+            combo++;
+            comboResetTimer = comboResetAfter;
         }
 
-        attackCD = 0.4f;
+        if (combo < maxCombo)
+        {
+            foreach (GameObject enemy in enemiesInRange)
+            {
+                Rigidbody rb = enemy.GetComponent<Rigidbody>();
+                EnemyHealth enemyHealth = enemy.GetComponent<EnemyHealth>();
+
+                rb.AddForce(playerOpposite.x * knockbackForward, knockbackUp, 
+                    playerOpposite.z * knockbackForward, ForceMode.Impulse);
+                enemyHealth.health -= weaponDamage;
+            }
+        }
+        else if (combo == maxCombo)
+        {
+            foreach (GameObject enemy in enemiesInRange)
+            {
+                Rigidbody rb = enemy.GetComponent<Rigidbody>();
+                EnemyHealth enemyHealth = enemy.GetComponent<EnemyHealth>();
+
+                rb.AddForce(playerOpposite.x * knockbackForward, knockbackUp * 3, 
+                    playerOpposite.z * knockbackForward, ForceMode.Impulse);
+                enemyHealth.health -= weaponDamage * 2;
+            }
+            combo = 0;
+            comboResetTimer = comboResetAfter;
+        }
+
+        attackCD = setCD;
     }
 
     void Timers()
@@ -90,5 +120,21 @@ public class PlayerAttack : MonoBehaviour
         {
             canAttack = false;
         }
+
+        if (combo > 0 && comboResetTimer > 0)
+        {
+            comboResetTimer -= Time.deltaTime;
+        }
+
+        if (comboResetTimer <= 0)
+        {
+            comboResetTimer = comboResetAfter;
+            combo = 0;
+        }
+    }
+
+    void UpdateUI()
+    {
+        comboText.text = combo.ToString();
     }
 }
