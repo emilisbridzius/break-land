@@ -5,9 +5,10 @@ using UnityEngine;
 
 public class MoveController : MonoBehaviour
 {
-    [SerializeField] float moveSpeed;
+    [SerializeField] float moveSpeed, dashPower;
     [SerializeField] Rigidbody rb;
     [SerializeField] Transform camOrientation;
+    [SerializeField] PlayerHealth pHealth;
 
     Vector3 forward, right;
 
@@ -45,16 +46,13 @@ public class MoveController : MonoBehaviour
 
             // Apply movement to the Rigidbody using MovePosition
             rb.MovePosition(rb.position + moveDirection * moveSpeed * Time.deltaTime);
+
+            if (Input.GetKeyDown(KeyCode.LeftShift) && pHealth.dash >= 1)
+            {
+                rb.AddForce(moveDirection.x * dashPower, 0, moveDirection.z * dashPower, ForceMode.VelocityChange);
+                Debug.Log("dash");
+            }
         }
 
-        // Check for player movement (you can replace this with your own movement detection logic)
-        float horizontalInput2 = Input.GetAxis("Horizontal");
-        float verticalInput2 = Input.GetAxis("Vertical");
-
-        if (Mathf.Abs(horizontalInput2) > 0.1f || Mathf.Abs(verticalInput2) > 0.1f)
-        {
-
-
-        }
     }
 }
