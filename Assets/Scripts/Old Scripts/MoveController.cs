@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class MoveController : MonoBehaviour
 {
-    [SerializeField] float moveSpeed, dodgePower, dodgeCD;
+    [SerializeField] float moveSpeed, dodgePower, dodgeCD, dodgeSpeed;
     [SerializeField] Rigidbody rb;
     [SerializeField] Transform camOrientation, orientation;
     [SerializeField] PlayerHealth pHealth;
@@ -59,7 +59,9 @@ public class MoveController : MonoBehaviour
 
     void Dodge()
     {
-        Vector3 dodgeDestination;
+        Vector3 currentPos = rb.position;
+        Vector3 dodgeDestination = transform.position += moveDirection * dodgePower;
+        Vector3.Lerp(currentPos, dodgeDestination, dodgeSpeed);
 
         pHealth.stamina -= 0.3f;
 
