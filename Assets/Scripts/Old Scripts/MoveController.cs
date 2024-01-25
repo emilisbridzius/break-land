@@ -5,20 +5,22 @@ using UnityEngine;
 
 public class MoveController : MonoBehaviour
 {
-    [SerializeField] float moveSpeed, dashPower;
+    [SerializeField] float moveSpeed, dodgePower, dodgeCD;
     [SerializeField] Rigidbody rb;
-    [SerializeField] Transform camOrientation;
+    [SerializeField] Transform camOrientation, orientation;
     [SerializeField] PlayerHealth pHealth;
 
     Vector3 forward, right;
+    Vector3 moveDirection;
 
-    public bool canMove;
+    public bool canMove, canDodge;
     public bool isMoving;
 
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
         canMove = true;
+        canDodge = true;
     }
 
     private void Update()
@@ -42,17 +44,39 @@ public class MoveController : MonoBehaviour
             right.Normalize();
 
             // Calculate movement direction based on input and camera orientation
-            Vector3 moveDirection = forward * verticalInput + right * horizontalInput;
+            moveDirection = forward * verticalInput + right * horizontalInput;
 
             // Apply movement to the Rigidbody using MovePosition
             rb.MovePosition(rb.position + moveDirection * moveSpeed * Time.deltaTime);
 
-            if (Input.GetKeyDown(KeyCode.LeftShift) && pHealth.dash >= 1)
+            if (Input.GetKeyDown(KeyCode.LeftShift) && canDodge && pHealth.stamina >= 0.3f)
             {
-                rb.AddForce(moveDirection.x * dashPower, 0, moveDirection.z * dashPower, ForceMode.VelocityChange);
-                Debug.Log("dash");
+                Dodge();
             }
         }
 
+    }
+
+    void Dodge()
+    {
+        Vector3 dodgeDestination;
+
+        pHealth.stamina -= 0.3f;
+
+        Debug.Log("dodge");
+    }
+
+    void Timers()
+    {
+        if (dodgeCD > 0)
+        {
+            canDodge = true;
+            dodgeCD -= Time.deltaTime;
+        }
+
+        if (dodgeCD < 0)
+        {
+            dodgeCD = 0;
+        }
     }
 }

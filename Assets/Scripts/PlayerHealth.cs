@@ -5,31 +5,21 @@ using UnityEngine.UI;
 
 public class PlayerHealth : MonoBehaviour
 {
-    [SerializeField] float health;
-    [SerializeField] float maxHealth;
-    public float dash, dashCD;
-    [SerializeField] Image healthBar, dashIcon;
+    public float health;
+    public float maxHealth;
+    public float stamina;
+    public float maxStamina;
+    [SerializeField] Image healthBar, staminaBar;
 
     private void Start()
     {
         health = maxHealth;
-        dash = 1;
+        stamina = maxStamina;
     }
 
     private void Update()
     {
-        DashTimer();
         healthBar.fillAmount = health;
-        dashIcon.fillAmount = dash;
-    }
-
-    void DashTimer()
-    {
-        if (dash < 1)
-        {
-            dash += (dashCD * Time.deltaTime);
-        }
-
-
+        staminaBar.fillAmount = stamina;
     }
 }
