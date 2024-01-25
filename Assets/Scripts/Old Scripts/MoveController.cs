@@ -7,14 +7,15 @@ public class MoveController : MonoBehaviour
 {
     [SerializeField] float moveSpeed, dodgePower, dodgeCD, dodgeSpeed;
     [SerializeField] Rigidbody rb;
-    [SerializeField] Transform camOrientation, orientation;
+    [SerializeField] Transform camOrientation, orientation, model;
     [SerializeField] PlayerHealth pHealth;
+    [SerializeField] Animator anim;
 
     Vector3 forward, right;
     Vector3 moveDirection;
 
     public bool canMove, canDodge;
-    public bool isMoving;
+    public bool isMoving, isRunning;
 
     private void Start()
     {
@@ -49,6 +50,18 @@ public class MoveController : MonoBehaviour
             // Apply movement to the Rigidbody using MovePosition
             rb.MovePosition(rb.position + moveDirection * moveSpeed * Time.deltaTime);
 
+            model.transform.forward = moveDirection;
+
+            if (Mathf.Abs(horizontalInput) > 0.1f || Mathf.Abs(verticalInput) > 0.1f)
+            {
+                isRunning = true;
+
+                if (!anim.GetCurrentAnimatorStateInfo(0).IsName("Run"))
+                {
+                    anim.Play("Run");
+                }
+            }
+
             if (Input.GetKeyDown(KeyCode.LeftShift) && canDodge && pHealth.stamina >= 0.3f)
             {
                 Dodge();
@@ -61,7 +74,7 @@ public class MoveController : MonoBehaviour
     {
         Vector3 currentPos = rb.position;
         Vector3 dodgeDestination = transform.position += moveDirection * dodgePower;
-        Vector3.Lerp(currentPos, dodgeDestination, dodgeSpeed);
+        Vector3.Lerp(currentPos, dodgeDestination, Time.deltaTime);
 
         pHealth.stamina -= 0.3f;
 
