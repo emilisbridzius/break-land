@@ -26,7 +26,7 @@ public class PlayerAttack : MonoBehaviour
         canAttack = true;
 
         combo = 0;
-        comboResetTimer = 5;
+        comboResetTimer = 3;
     }
 
     private void Update()

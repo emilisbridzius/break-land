@@ -924,23 +924,19 @@ MonoBehaviour:
   dodgePower: 8
   dodgeCD: 0.5
   dodgeSpeed: 1
-  jumpPowerXZ: 8
-  jumpPowerY: 4
   rb: {fileID: 1057588208}
   camOrientation: {fileID: 1777885606}
+  playerInputSpace: {fileID: 1086577303}
   orientation: {fileID: 1777885606}
   model: {fileID: 44624121356398676}
   pHealth: {fileID: 1057588210}
   anim: {fileID: 6232601119871298094}
   canMove: 0
   canDodge: 0
-  canJump: 0
   isMoving: 0
   isDodging: 0
   dodgeTime: 0
   dodgeDuration: 1.1
-  jumpTime: 0
-  jumpDuration: 1.6
 --- !u!114 &1057588210
 MonoBehaviour:
   m_ObjectHideFlags: 0
