@@ -5,23 +5,25 @@ using UnityEngine;
 
 public class MoveController : MonoBehaviour
 {
-    [SerializeField] float moveSpeed, dodgePower, dodgeCD, dodgeSpeed;
+    [SerializeField] float moveSpeed, dodgePower, dodgeCD, dodgeSpeed, jumpPowerXZ, jumpPowerY;
     [SerializeField] Rigidbody rb;
     [SerializeField] Transform camOrientation, orientation, model;
     [SerializeField] PlayerHealth pHealth;
     [SerializeField] Animator anim;
 
     Vector3 forward, right;
-    Vector3 moveDirection;
+    Vector3 moveDirection, lastMoveDirection, currentPos, dodgeDestination, jumpDestination;
 
-    public bool canMove, canDodge;
-    public bool isMoving, isRunning;
+    public bool canMove, canDodge, canJump;
+    public bool isMoving, isDodging;
+    public float dodgeTime, dodgeDuration, jumpTime, jumpDuration;
 
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
         canMove = true;
         canDodge = true;
+        canJump = true;
     }
 
     private void Update()
@@ -50,35 +52,69 @@ public class MoveController : MonoBehaviour
             // Apply movement to the Rigidbody using MovePosition
             rb.MovePosition(rb.position + moveDirection * moveSpeed * Time.deltaTime);
 
-            model.transform.forward = moveDirection;
-
             if (Mathf.Abs(horizontalInput) > 0.1f || Mathf.Abs(verticalInput) > 0.1f)
             {
-                isRunning = true;
+                model.transform.forward = moveDirection;
 
-                if (!anim.GetCurrentAnimatorStateInfo(0).IsName("Run"))
-                {
-                    anim.Play("Run");
-                }
+                anim.SetBool("isRunning", true);
+                anim.SetBool("isIdle", false);
+                canDodge = true;
+                canJump = true;
+            }
+
+            if (Mathf.Abs(horizontalInput) < 0.1f && Mathf.Abs(verticalInput) < 0.1f)
+            {
+                anim.SetBool("isIdle", true);
+                anim.SetBool("isRunning", false);
+                canDodge = false;
+                canJump = false;
             }
 
             if (Input.GetKeyDown(KeyCode.LeftShift) && canDodge && pHealth.stamina >= 0.3f)
             {
-                Dodge();
+                currentPos = rb.position;
+                dodgeDestination = currentPos += model.forward * dodgePower;
+                anim.SetTrigger("dodge");
+                dodgeTime = 0;
+                StartCoroutine(Dodge(dodgeDestination, dodgeDuration));
+            }
+
+            if (Input.GetKeyDown(KeyCode.Space) && canJump && pHealth.stamina >= 0.4f)
+            {
+                currentPos = rb.position;
+                jumpDestination = currentPos += model.forward * jumpPowerXZ;
+                anim.SetTrigger("jump");
+                jumpTime = 0;
+                StartCoroutine(JumpRoll(jumpDestination, jumpDuration));
             }
         }
 
     }
 
-    void Dodge()
+    IEnumerator Dodge(Vector3 dodgeDestination, float duration)
     {
-        Vector3 currentPos = rb.position;
-        Vector3 dodgeDestination = transform.position += moveDirection * dodgePower;
-        Vector3.Lerp(currentPos, dodgeDestination, Time.deltaTime);
+        Vector3 startPosition = transform.position;
+        while (dodgeTime < duration)
+        {
+            canMove = false;
+            transform.position = Vector3.Lerp(startPosition, dodgeDestination, dodgeTime / duration);
+            dodgeTime += Time.deltaTime;
+            yield return null;
+        }
+        canMove = true;
+    }
 
-        pHealth.stamina -= 0.3f;
-
-        Debug.Log("dodge");
+    IEnumerator JumpRoll(Vector3 jumpDestination, float duration)
+    {
+        Vector3 startPosition = transform.position;
+        while (jumpTime < duration)
+        {
+            canMove = false;
+            transform.position = Vector3.Lerp(startPosition, jumpDestination, jumpTime / duration);
+            jumpTime += Time.deltaTime;
+            yield return null;
+        }
+        canMove = true;
     }
 
     void Timers()
