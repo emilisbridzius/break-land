@@ -12,7 +12,7 @@ public class MoveController : MonoBehaviour
     [SerializeField] Animator anim;
 
     Vector3 forward, right;
-    Vector3 moveDirection, lastMoveDirection, currentPos, dodgeDestination, moveDir;
+    Vector3 moveDirection, lastMoveDirection, currentPos, dodgeDestination;
 
     public bool canMove, canDodge;
     public bool isMoving, isDodging;
@@ -32,8 +32,8 @@ public class MoveController : MonoBehaviour
             float horizontalInput = Input.GetAxis("Horizontal");
             float verticalInput = Input.GetAxis("Vertical");
 
-            Vector3 forward = Camera.main.transform.forward;
-            Vector3 right = Camera.main.transform.right;
+            Vector3 forward = orientation.transform.forward;
+            Vector3 right = orientation.transform.right;
 
             forward.y = 0f;
             right.y = 0f;
