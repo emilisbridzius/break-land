@@ -924,6 +924,7 @@ MonoBehaviour:
   dodgePower: 8
   dodgeCD: 0.5
   dodgeSpeed: 1
+  backstepPower: 4
   rb: {fileID: 1057588208}
   camOrientation: {fileID: 1777885606}
   orientation: {fileID: 1777885606}
@@ -932,10 +933,13 @@ MonoBehaviour:
   anim: {fileID: 6232601119871298094}
   canMove: 0
   canDodge: 0
+  canBackstep: 0
   isMoving: 0
   isDodging: 0
   dodgeTime: 0
   dodgeDuration: 1.1
+  turnSpeed: 0.1
+  currentRot: 0
 --- !u!114 &1057588210
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1066,9 +1070,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   focus: {fileID: 1057588207}
-  focusRadius: 0.01
-  focusCentering: 0.05
-  distance: 5
+  focusRadius: 0.3
+  focusCentering: 0.5
+  distance: 4
   rotationSpeed: 220
   minVerticalAngle: -89
   maxVerticalAngle: 89
@@ -1518,13 +1522,13 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: -876546973899608171, guid: 37ca6a5122e5152459581efed8a817a9, type: 3}
-  - {fileID: -876546973899608171, guid: 37ca6a5122e5152459581efed8a817a9, type: 3}
-  - {fileID: -2813467912831258332, guid: 37ca6a5122e5152459581efed8a817a9, type: 3}
-  - {fileID: -3846018093981099296, guid: 37ca6a5122e5152459581efed8a817a9, type: 3}
-  - {fileID: 4874126678125670354, guid: 37ca6a5122e5152459581efed8a817a9, type: 3}
-  - {fileID: -6922793697723135513, guid: 37ca6a5122e5152459581efed8a817a9, type: 3}
-  - {fileID: -6478536213147159724, guid: 37ca6a5122e5152459581efed8a817a9, type: 3}
+  - {fileID: 2100000, guid: 1d924399aa96d4378b9c507b7669a4f4, type: 2}
+  - {fileID: 2100000, guid: 33230baef4dda4cf4bd25fcb15d0d06f, type: 2}
+  - {fileID: 2100000, guid: ff33c7fce672541f095331a057da80f0, type: 2}
+  - {fileID: 2100000, guid: a6d73f9e47bd28d438e0eaa89328614f, type: 2}
+  - {fileID: 2100000, guid: a6d73f9e47bd28d438e0eaa89328614f, type: 2}
+  - {fileID: 2100000, guid: 33230baef4dda4cf4bd25fcb15d0d06f, type: 2}
+  - {fileID: 2100000, guid: c3f545871e6ad0b429875fb73852a671, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

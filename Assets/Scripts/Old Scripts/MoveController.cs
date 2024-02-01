@@ -2,10 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Timeline;
 
 public class MoveController : MonoBehaviour
 {
-    [SerializeField] float moveSpeed, dodgePower, dodgeCD, dodgeSpeed;
+    [SerializeField] float moveSpeed, dodgePower, dodgeCD, dodgeSpeed, backstepPower;
     [SerializeField] Rigidbody rb;
     [SerializeField] Transform camOrientation, orientation, model;
     [SerializeField] PlayerHealth pHealth;
@@ -14,9 +15,11 @@ public class MoveController : MonoBehaviour
     Vector3 forward, right;
     Vector3 moveDirection, lastMoveDirection, currentPos, dodgeDestination;
 
-    public bool canMove, canDodge;
+    Quaternion rotDirection;
+
+    public bool canMove, canDodge, canBackstep;
     public bool isMoving, isDodging;
-    public float dodgeTime, dodgeDuration;
+    public float dodgeTime, dodgeDuration, turnSpeed, currentRot;
 
     private void Start()
     {
@@ -42,16 +45,19 @@ public class MoveController : MonoBehaviour
             right.Normalize();
 
             moveDirection = forward * verticalInput + right * horizontalInput;
+            Vector3 inputDirection = new Vector3(horizontalInput, 0f, verticalInput);
+            Quaternion targetRot = Quaternion.LookRotation(inputDirection.normalized, Vector3.up);
 
             rb.MovePosition(rb.position + moveDirection * moveSpeed * Time.deltaTime);
 
             if (Mathf.Abs(horizontalInput) > 0.1f || Mathf.Abs(verticalInput) > 0.1f)
             {
-                model.transform.forward = moveDirection;
+                model.transform.rotation = Quaternion.Lerp(model.transform.rotation, targetRot, turnSpeed);
 
                 anim.SetBool("isRunning", true);
                 anim.SetBool("isIdle", false);
                 canDodge = true;
+                canBackstep = false;
             }
 
             if (Mathf.Abs(horizontalInput) < 0.1f && Mathf.Abs(verticalInput) < 0.1f)
@@ -59,6 +65,16 @@ public class MoveController : MonoBehaviour
                 anim.SetBool("isIdle", true);
                 anim.SetBool("isRunning", false);
                 canDodge = false;
+                canBackstep = true;
+            }
+
+            if (Input.GetKeyDown(KeyCode.LeftShift) && Mathf.Abs(horizontalInput) < 0.1f && Mathf.Abs(verticalInput) < 0.1f && canBackstep && pHealth.stamina >= 0.2f)
+            {
+                currentPos = rb.position;
+                dodgeDestination = currentPos += -model.forward * backstepPower;
+                anim.SetTrigger("backstep");
+                dodgeTime = 0;
+                StartCoroutine(Backstep(dodgeDestination, .8f));
             }
 
             if (Input.GetKeyDown(KeyCode.LeftShift) && canDodge && pHealth.stamina >= 0.3f)
@@ -77,6 +93,21 @@ public class MoveController : MonoBehaviour
     IEnumerator Dodge(Vector3 dodgeDestination, float duration)
     {
         Vector3 startPosition = transform.position;
+        while (dodgeTime < duration)
+        {
+            canMove = false;
+            rb.position = Vector3.Lerp(startPosition, dodgeDestination, dodgeTime / duration);
+            dodgeTime += Time.deltaTime;
+            yield return null;
+        }
+        canMove = true;
+    }
+
+    IEnumerator Backstep(Vector3 dodgeDestination, float duration)
+    {
+        Vector3 startPosition = transform.position;
+        yield return new WaitForSeconds(0.15f);
+
         while (dodgeTime < duration)
         {
             canMove = false;
