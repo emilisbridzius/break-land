@@ -11,6 +11,7 @@ public class MoveController : MonoBehaviour
     [SerializeField] Transform camOrientation, orientation, model;
     [SerializeField] PlayerHealth pHealth;
     [SerializeField] Animator anim;
+    [SerializeField] AudioManager audioM;
 
     Vector3 forward, right;
     Vector3 moveDirection, lastMoveDirection, currentPos, dodgeDestination;

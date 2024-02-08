@@ -487,6 +487,7 @@ GameObject:
   m_Component:
   - component: {fileID: 566746333}
   - component: {fileID: 566746334}
+  - component: {fileID: 566746335}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -524,6 +525,19 @@ MonoBehaviour:
   pHealth: {fileID: 1057588210}
   recoveryRate: 0.5
   canRecoverStamina: 1
+--- !u!114 &566746335
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 566746331}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2f72e5f12a4f80c4d843f35a9ea73e01, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  audioSource: {fileID: 0}
 --- !u!1 &584463489
 GameObject:
   m_ObjectHideFlags: 0
@@ -931,6 +945,7 @@ MonoBehaviour:
   model: {fileID: 44624121356398676}
   pHealth: {fileID: 1057588210}
   anim: {fileID: 6232601119871298094}
+  audioM: {fileID: 0}
   canMove: 0
   canDodge: 0
   canBackstep: 0
