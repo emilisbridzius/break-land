@@ -79,11 +79,12 @@ public class BossBehaviour : MonoBehaviour
 
         if (canSeePlayer)
         {
+            anim.SetBool("isMoving", true);
             MoveAndFacePos(playerPos);
         }
         else if (!canSeePlayer)
         {
-
+            anim.SetBool("isMoving", false);
         }
     }
 
