@@ -1,140 +1,95 @@
 using OpenCover.Framework.Model;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using TMPro;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class PlayerAttack : MonoBehaviour
 {
-    [SerializeField] float attackCD, setCD, comboResetAfter;
-    [SerializeField] float knockbackForward, knockbackUp;
-    [SerializeField] int weaponDamage;
-    [SerializeField] GameObject player;
-    [SerializeField] TMP_Text comboText;
+    public List<GameObject> fireballs = new List<GameObject>();
+    public Transform spawnPos, chargePos, targetLock;
+    public GameObject fireball;
+    public Camera cam;
+    public RaycastHit hit;
 
-    public bool canAttack;
-    public int combo;
-    int maxCombo = 5;
-    public float comboResetTimer;
-    Vector3 playerOpposite;
+    public float projSpeed, timeUntilCharge;
+    public int projDamage, maxCharge;
 
-    List<GameObject> enemiesInRange = new List<GameObject>();
+    private float heldFor, chargeTime;
 
     private void Start()
     {
-        GetComponent<Collider>();
-        canAttack = true;
-
-        combo = 0;
-        comboResetTimer = 3;
+        chargeTime = 0f;
     }
 
     private void Update()
     {
-        Timers();
-        UpdateUI();
+        TargetCheck();
 
-        playerOpposite = player.transform.forward;
-
-        if (Input.GetKey(KeyCode.Mouse0) && canAttack || Input.GetKeyDown(KeyCode.Mouse0) && canAttack)
+        if (Input.GetKey(KeyCode.Mouse0))
         {
-            SwingAttack();
+            heldFor += Time.deltaTime;
+            chargeTime += Time.deltaTime;
         }
-    }
-
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.gameObject.CompareTag("Enemy"))
+        else if (Input.GetKeyUp(KeyCode.Mouse0))
         {
-            if (!enemiesInRange.Contains(other.gameObject))
+            if (heldFor > 0.2f && fireballs.Count > 0)
             {
-                enemiesInRange.Add(other.gameObject);
-                
+                chargeTime = 0f;
+                foreach (GameObject fb in fireballs)
+                {
+                    fb.GetComponent<FireballBehaviour>().HMCR();
+                }
+                fireballs.Clear();
             }
-        }
-    }
-
-    private void OnTriggerExit(Collider other)
-    {
-        if (other.gameObject.CompareTag("Enemy"))
-        {
-            enemiesInRange.Remove(other.gameObject);
-        }
-    }
-
-    void SwingAttack()
-    {
-        if (enemiesInRange.Count > 0)
-        {
-            combo++;
-            comboResetTimer = comboResetAfter;
-        }
-
-        if (combo < maxCombo)
-        {
-            foreach (GameObject enemy in enemiesInRange)
+            else
             {
-                Rigidbody rb = enemy.GetComponent<Rigidbody>();
-                EnemyHealth enemyHealth = enemy.GetComponent<EnemyHealth>();
-
-                rb.AddForce(playerOpposite.x * knockbackForward, knockbackUp, 
-                    playerOpposite.z * knockbackForward, ForceMode.Impulse);
-                enemyHealth.health -= weaponDamage;
+                CreateFireball();
             }
-        }
-        else if (combo == maxCombo)
-        {
-            foreach (GameObject enemy in enemiesInRange)
-            {
-                Rigidbody rb = enemy.GetComponent<Rigidbody>();
-                EnemyHealth enemyHealth = enemy.GetComponent<EnemyHealth>();
-
-                rb.AddForce(playerOpposite.x * knockbackForward, knockbackUp * 3, 
-                    playerOpposite.z * knockbackForward, ForceMode.Impulse);
-                enemyHealth.health -= weaponDamage * 2;
-            }
-            combo = 0;
-            comboResetTimer = comboResetAfter;
+            heldFor = 0;
         }
 
-        attackCD = setCD;
-    }
-
-    void Timers()
-    {
-        if (attackCD > 0)
+        if (chargeTime >= timeUntilCharge && fireballs.Count < maxCharge)
         {
-            attackCD -= Time.deltaTime;
-        }
-        
-        if (attackCD < 0)
-        {
-            attackCD = 0;
+            ChargeFireball();
+            chargeTime = 0.0f;
         }
 
-        if (attackCD == 0)
+        if (fireballs.Count > 0)
         {
-            canAttack = true;
-        }
-        else
-        {
-            canAttack = false;
-        }
-
-        if (combo > 0 && comboResetTimer > 0)
-        {
-            comboResetTimer -= Time.deltaTime;
-        }
-
-        if (comboResetTimer <= 0)
-        {
-            comboResetTimer = comboResetAfter;
-            combo = 0;
+            SpinFireballsInPlace();
         }
     }
 
-    void UpdateUI()
+    void TargetCheck()
     {
-        comboText.text = combo.ToString();
+        Physics.Raycast(cam.transform.position, cam.transform.forward, out hit, Mathf.Infinity);
+
+        if (hit.collider != null && hit.collider.transform.CompareTag("Enemy"))
+        {
+            targetLock = hit.transform;
+        }
+    }
+
+    void CreateFireball()
+    {
+        GameObject frb = Instantiate(fireball, spawnPos.position, cam.transform.rotation);
+        frb.GetComponent<FireballBehaviour>().HMCR();
+    }
+
+    void ChargeFireball()
+    {
+        GameObject frb = Instantiate(fireball, chargePos.position, cam.transform.rotation);
+        fireballs.Add(frb);
+    }
+
+    void SpinFireballsInPlace()
+    {
+        foreach (GameObject fb in fireballs)
+        {
+            fb.transform.RotateAround(chargePos.position, chargePos.up, Random.Range(0, 360));
+        }
     }
 }

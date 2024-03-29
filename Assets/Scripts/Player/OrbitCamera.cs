@@ -38,8 +38,8 @@ public class OrbitCamera : MonoBehaviour
         focusPoint = focus.position;
         transform.localRotation = Quaternion.Euler(orbitAngles);
 
-        //Cursor.visible = false;
-        //Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
     }
 
     private void LateUpdate()

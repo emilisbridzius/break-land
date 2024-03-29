@@ -1,0 +1,60 @@
+{
+    "name": "PlayerInputs",
+    "maps": [
+        {
+            "name": "Mouse",
+            "id": "3d82e759-bb82-4cb8-a9bd-00f9a3e3c552",
+            "actions": [
+                {
+                    "name": "SingleShot",
+                    "type": "Button",
+                    "id": "991de540-9ace-4535-9f43-fc5f9ab564c4",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "ChargeShot",
+                    "type": "Button",
+                    "id": "1ab4eb3d-a42f-4925-adf1-f26c84723b17",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "6bc1eeef-16e6-4c06-9ea3-8406e78886c8",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "Press",
+                    "processors": "",
+                    "groups": "",
+                    "action": "SingleShot",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "56011140-265e-4678-8133-aacf7627a10f",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "Hold",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ChargeShot",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": [
+        {
+            "name": "Base Controls",
+            "bindingGroup": "Base Controls",
+            "devices": []
+        }
+    ]
+}
