@@ -87,9 +87,10 @@ public class PlayerAttack : MonoBehaviour
 
     void SpinFireballsInPlace()
     {
+        
         foreach (GameObject fb in fireballs)
         {
-            fb.transform.RotateAround(chargePos.position, chargePos.up, Random.Range(0, 360));
+            fb.transform.RotateAround(transform.position, transform.up, 10);
         }
     }
 }
