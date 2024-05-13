@@ -1,31 +1,35 @@
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
+using UnityEditor.IMGUI.Controls;
 using UnityEngine;
 using UnityEngine.Timeline;
 
 public class MoveController : MonoBehaviour
 {
-    [SerializeField] float moveSpeed, dodgePower, dodgeCD, dodgeSpeed, backstepPower;
+    [SerializeField] float moveSpeed, jumpForce, jumpCD, rayMaxDist, dodgePower, dodgeCD, dodgeSpeed, backstepPower;
     [SerializeField] Rigidbody rb;
-    [SerializeField] Transform camOrientation, orientation, model;
+    [SerializeField] Transform camOrientation, orientation, model, feet;
     [SerializeField] PlayerHealth pHealth;
     [SerializeField] Animator anim;
-    [SerializeField] AnimationCurve dodgeCurve, backstepCurve;
+    AnimationCurve dodgeCurve, backstepCurve;
     [SerializeField] AudioManager audioM;
     [SerializeField] Camera cam;
 
     Vector3 moveDirection, currentPos, dodgeDestination;
+    RaycastHit hitInfo;
+    public LayerMask ignoreLayer, groundLayer;
 
-    public bool canMove, canDodge, canBackstep;
-    public bool isMoving, isDodging;
-    public float dodgeTime, dodgeDuration, turnSpeed, currentRot;
+    public bool canMove, canJump, canDodge, canBackstep;
+    public bool isMoving, isDodging, isGrounded;
+    public float jumpTime, dodgeTime, dodgeDuration, jumpReset, turnSpeed, currentRot;
 
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
         canMove = true;
         canDodge = true;
+        jumpTime = jumpCD;
 
         Keyframe dodgeLastFrame = dodgeCurve[dodgeCurve.length - 1];
         dodgeTime = dodgeLastFrame.time;
@@ -33,6 +37,7 @@ public class MoveController : MonoBehaviour
 
     private void Update()
     {
+
         if (canMove)
         {
             float horizontalInput = Input.GetAxis("Horizontal");
@@ -72,6 +77,7 @@ public class MoveController : MonoBehaviour
                 canBackstep = true;
             }
 
+   # region Dodging ifs 
             if (Input.GetKeyDown(KeyCode.LeftShift) && canBackstep && pHealth.stamina >= 0.2f)
             {
                 currentPos = rb.position;
@@ -87,11 +93,27 @@ public class MoveController : MonoBehaviour
                 anim.SetTrigger("dodge");
                 StartCoroutine(Dodge(dodgeDestination, dodgeDuration));
             }
+            #endregion
+
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                if (canJump && isGrounded && jumpTime <= 0)
+                {
+                    canJump = false;
+                    Jump();
+                    Invoke(nameof(JumpReset), jumpReset);
+                }
+            }
+            
+            GroundCheck();
+            StateCheck();
+            Timers();
 
         }
 
     }
 
+    #region Dodging code
     IEnumerator Dodge(Vector3 dodgeDestination, float duration)
     {
         float timer = 0;
@@ -132,9 +154,61 @@ public class MoveController : MonoBehaviour
         }
         canMove = true;
     }
+    #endregion
+
+    void Jump() 
+    {
+        anim.SetTrigger("jump");
+        rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
+        rb.AddForce(model.up * jumpForce, ForceMode.Impulse);
+        rb.AddForce(model.forward * jumpForce / 2, ForceMode.Impulse);
+    }
+
+    void JumpReset()
+    {
+        jumpTime = jumpCD;
+        canJump = true;
+    }
+
+    public void GroundCheck()
+    {
+        if (Physics.Raycast(feet.position, Vector3.down, rayMaxDist, groundLayer))
+        {
+            isGrounded = true;
+            canJump = true;
+            anim.SetBool("isGrounded", true);
+        }
+        else
+        {
+            isGrounded = false;
+            canJump = false;
+            anim.SetBool("isGrounded", false);
+        }
+    }
+
+    public void StateCheck()
+    {
+        if (isPlaying(anim, "Landing") || isPlaying(anim, "Jump") || isPlaying(anim, "Falling"))
+        {
+            canJump = false;
+        }
+    }
+
+    bool isPlaying(Animator anim, string stateName)
+    {
+        if (anim.GetCurrentAnimatorStateInfo(0).IsName("Landing") && 
+            anim.GetCurrentAnimatorStateInfo(0).normalizedTime < 1.0f)
+            return true;
+        else return false;
+    }
 
     void Timers()
     {
+        if (jumpTime > 0)
+        {
+            jumpTime -= Time.deltaTime;
+        }
+
         if (dodgeCD > 0)
         {
             canDodge = true;

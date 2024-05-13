@@ -6,6 +6,8 @@ TagManager:
   tags:
   - Targetable
   - Enemy
+  - Collide
+  - Ground
   layers:
   - Default
   - TransparentFX
