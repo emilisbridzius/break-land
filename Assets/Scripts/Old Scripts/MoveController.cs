@@ -9,9 +9,9 @@ public class MoveController : MonoBehaviour
 {
     [SerializeField] float moveSpeed, jumpForce, jumpCD, rayMaxDist, dodgePower, dodgeCD, dodgeSpeed, backstepPower;
     [SerializeField] Rigidbody rb;
-    [SerializeField] Transform camOrientation, orientation, model, feet;
+    public Transform camOrientation, orientation, model, feet;
     [SerializeField] PlayerHealth pHealth;
-    [SerializeField] Animator anim;
+    public Animator anim;
     AnimationCurve dodgeCurve, backstepCurve;
     [SerializeField] AudioManager audioM;
     [SerializeField] Camera cam;
@@ -31,8 +31,8 @@ public class MoveController : MonoBehaviour
         canDodge = true;
         jumpTime = jumpCD;
 
-        Keyframe dodgeLastFrame = dodgeCurve[dodgeCurve.length - 1];
-        dodgeTime = dodgeLastFrame.time;
+        //Keyframe dodgeLastFrame = dodgeCurve[dodgeCurve.length - 1];
+        //dodgeTime = dodgeLastFrame.time;
     }
 
     private void Update()
@@ -101,7 +101,7 @@ public class MoveController : MonoBehaviour
                 {
                     canJump = false;
                     Jump();
-                    Invoke(nameof(JumpReset), jumpReset);
+                    //Invoke(nameof(JumpReset), jumpReset);
                 }
             }
             

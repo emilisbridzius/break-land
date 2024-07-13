@@ -9,12 +9,21 @@ public class EnemyHealth : MonoBehaviour
     public int maxHealth;
 
     [SerializeField] TMP_Text healthBar;
+    RagdollController ragdoll;
+
+    private void Start()
+    {
+        ragdoll = GetComponent<RagdollController>();
+    }
 
     private void Update()
     {
-        UpdateUI();
+        //UpdateUI();
         
-
+        if (health <= 0 )
+        {
+            ragdoll.Die();
+        }
     }
 
     void UpdateUI()

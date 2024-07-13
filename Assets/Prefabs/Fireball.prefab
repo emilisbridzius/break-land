@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 9205712973179209192}
   - component: {fileID: -138870467749404228}
+  - component: {fileID: -3252289989430664496}
   - component: {fileID: 9205712973179209194}
   - component: {fileID: 9205712973179209195}
   - component: {fileID: 9205712973179209108}
@@ -30,7 +31,7 @@ Transform:
   m_GameObject: {fileID: 9205712973179209110}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -0.201, y: 0, z: -0.153}
-  m_LocalScale: {x: 0.15, y: 0.15, z: 0.15}
+  m_LocalScale: {x: 0.45000002, y: 0.45000002, z: 0.45000002}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 3907572847423186961}
@@ -50,6 +51,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   master: {fileID: 0}
+--- !u!114 &-3252289989430664496
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9205712973179209110}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b50b1f0309beef342b73ff0310ef4d7e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!33 &9205712973179209194
 MeshFilter:
   m_ObjectHideFlags: 0
