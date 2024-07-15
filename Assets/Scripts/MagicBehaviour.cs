@@ -8,11 +8,15 @@ using UnityEngine;
 public class MagicBehaviour : MonoBehaviour
 {
     public PlayerAttack master;
+    public GameObject spike;
+    public Transform groundSpawn;
     Bounds spawnBounds;
+    public int spikesToSpawn = 10;
+    public float boundsLength, boundsWidth;
+    List<Transform> enemies = new List<Transform>();
 
     Vector3 startPos, endPos, midPoint, randomDir, curvePoint;
     float step;
-    float boundsLength, boundsWidth;
 
     void Awake()
     {
@@ -68,8 +72,57 @@ public class MagicBehaviour : MonoBehaviour
     }
     #endregion
 
-    void CreateRandomPillarSpawns()
+    #region creating spikes with random positions, rotations and scale within a bound
+    public void CreateSpawnBounds()
     {
-        spawnBounds = new Bounds(transform.position, new Vector3(boundsWidth, 0, boundsLength));
+        spawnBounds = new Bounds(groundSpawn.position, new Vector3(boundsWidth, master.transform.position.y, boundsLength));
+
+        SpawnPillars();
     }
+
+    Vector3 GetRandomPositionInBounds()
+    {
+        float randomX = Random.Range(spawnBounds.min.x, spawnBounds.max.x);
+        float randomY = Random.Range(spawnBounds.min.z, spawnBounds.max.z);
+        Vector3 randomPos = new Vector3(randomX, spawnBounds.center.y, randomY);
+
+        return randomPos;
+    }
+
+    Quaternion GetRandomRotationInBounds()
+    {
+        float randomZ = Random.Range(30, -50);
+        float randomX = Random.Range(0, 50);
+        float randomY = Random.Range(30, 50);
+        Quaternion randomRot = new Quaternion(randomX, randomY, randomZ, 0);
+
+        return randomRot;
+    }
+
+    Vector3 GetRandomScaleInBounds()
+    {
+        float randomY = Random.Range(4, 5.5f);
+        Vector3 randomScale = new Vector3(0.55f, 0.55f, randomY);
+
+        return randomScale;
+    }
+
+    void SpawnPillars()
+    {
+        for (int i = 0; i < spikesToSpawn; i++)
+        {
+            Vector3 randomPosition = GetRandomPositionInBounds();
+            Quaternion randomRotation = GetRandomRotationInBounds();
+            GameObject instSpike = Instantiate(spike, randomPosition, randomRotation);
+            instSpike.transform.localScale = GetRandomScaleInBounds();
+        }
+    }
+    #endregion
+
+    #region creating a slab that bounces between enemies
+    void SpawnSlab()
+    {
+
+    }
+    #endregion
 }

@@ -469,7 +469,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: c68fee21165a84044ad8e12023abe251, type: 3}
       propertyPath: m_RootOrder
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: c68fee21165a84044ad8e12023abe251, type: 3}
       propertyPath: m_LocalPosition.x
@@ -743,7 +743,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 955284335}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.37652013, z: 1.80516}
+  m_LocalPosition: {x: 0, y: 0.37652013, z: 14.37}
   m_LocalScale: {x: 0.7795448, y: 0.7795448, z: 0.7795448}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -983,11 +983,11 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2142751623}
+  - component: {fileID: 2142751630}
   - component: {fileID: 2142751627}
   - component: {fileID: 2142751628}
   - component: {fileID: 2142751625}
   - component: {fileID: 2142751626}
-  - component: {fileID: 2142751630}
   - component: {fileID: 2142751624}
   - component: {fileID: 2142751629}
   m_Layer: 8
@@ -1112,6 +1112,7 @@ MonoBehaviour:
   magicAnims: []
   targetLock: {fileID: 0}
   spawnPos: {fileID: 2146487796}
+  groundSpawnPos: {fileID: 0}
   cam: {fileID: 669373262}
   fireMagic: {fileID: 2142751628}
   move: {fileID: 2142751625}
@@ -1165,6 +1166,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   master: {fileID: 2142751627}
+  spike: {fileID: 7287987575622766390, guid: e779a41cbbfa4e6458a0efffe0b93504, type: 3}
+  groundSpawn: {fileID: 955284336}
+  spikesToSpawn: 15
+  boundsLength: 30
+  boundsWidth: 5
 --- !u!1 &2146487795
 GameObject:
   m_ObjectHideFlags: 0
@@ -1609,7 +1615,7 @@ Transform:
   - {fileID: 1442003328956731665}
   - {fileID: 6175942956572127546}
   m_Father: {fileID: 0}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!54 &1865908242140418479
 Rigidbody:

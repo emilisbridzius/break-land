@@ -40,6 +40,6 @@ public class FireMagic : MonoBehaviour
 
     public void Tier2Fire()
     {
-        magic.HMCR();
+        magic.CreateSpawnBounds();
     }
 }

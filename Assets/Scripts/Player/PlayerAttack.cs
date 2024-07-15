@@ -64,10 +64,9 @@ public class PlayerAttack : MonoBehaviour
         if (fireMage)
         {
             move.anim.SetTrigger("attackT1");
-
+            fireMagic.Tier2Fire();
             move.model.rotation = Quaternion.LookRotation(normalizedDirection);
-            
-            fireMagic.Tier1Fire();
+            //fireMagic.Tier1Fire();
         }
     }
 
