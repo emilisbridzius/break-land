@@ -9,7 +9,7 @@ using UnityEngine.InputSystem;
 public class PlayerAttack : MonoBehaviour
 {
     public List<Animation> magicAnims = new List<Animation>();
-    public Transform targetLock, spawnPos;
+    public Transform targetLock, spawnPos, groundSpawnPos;
     public Camera cam;
     public RaycastHit hit;
 

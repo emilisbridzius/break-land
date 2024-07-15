@@ -9,6 +9,7 @@ public class FireMagic : MonoBehaviour
 
     public PlayerAttack attack;
     public MoveController move;
+    public MagicBehaviour magic;
 
     // Start is called before the first frame update
     void Start()
@@ -39,6 +40,6 @@ public class FireMagic : MonoBehaviour
 
     public void Tier2Fire()
     {
-
+        magic.HMCR();
     }
 }

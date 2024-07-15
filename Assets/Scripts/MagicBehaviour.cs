@@ -8,9 +8,11 @@ using UnityEngine;
 public class MagicBehaviour : MonoBehaviour
 {
     public PlayerAttack master;
+    Bounds spawnBounds;
 
     Vector3 startPos, endPos, midPoint, randomDir, curvePoint;
     float step;
+    float boundsLength, boundsWidth;
 
     void Awake()
     {
@@ -23,7 +25,7 @@ public class MagicBehaviour : MonoBehaviour
 
     }
 
-   #region homing along a curve point 
+    #region homing along a curve point 
     public IEnumerator HomingAttack(Transform targetPos)
     {
         CreateCurvePoint();
@@ -65,4 +67,9 @@ public class MagicBehaviour : MonoBehaviour
         StartCoroutine(HomingAttack(master.targetLock));
     }
     #endregion
+
+    void CreateRandomPillarSpawns()
+    {
+        spawnBounds = new Bounds(transform.position, new Vector3(boundsWidth, 0, boundsLength));
+    }
 }
