@@ -3,13 +3,12 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.InputSystem.XR;
 
 public class Movement : MonoBehaviour
 {
     [SerializeField, Range(0f, 100f)] float maxSpeed = 10f;
     [SerializeField, Range(0f, 100f)] float maxAcceleration = 10f;
-    [SerializeField] float jumpHeight;
+    [SerializeField] float jumpHeight, crouchSpeed;
     [SerializeField] Transform playerInputSpace, feet, head;
     public FirstPersonCam camController;
     public Collider standingCol, crouchedCol;
@@ -17,11 +16,12 @@ public class Movement : MonoBehaviour
     public float groundRayMaxDist, ceilingRayMaxDist;
     public LayerMask groundLayer, obstructionLayer;
     public bool canJump, canStand;
-    public bool isGrounded, isCrouched;
+    public bool isGrounded, isCrouched, isCamLerping;
 
     Vector3 velocity, desiredVelocity, upAxis;
     Rigidbody body;
     RaycastHit abovePlayer;
+    Coroutine lerpCam;
 
     private void Start()
     {
@@ -103,9 +103,14 @@ public class Movement : MonoBehaviour
         body.velocity = velocity;
     }
 
-    void Standing()
+    public void Standing()
     {
-        StartCoroutine(LerpCamera(camController.camPos.position, 0.09f));
+        if (lerpCam != null)
+        {
+            StopCoroutine(lerpCam);
+        }
+
+        lerpCam = StartCoroutine(LerpCamera(camController.camPos, crouchSpeed));
         maxSpeed = 10f;
 
         isCrouched = false;
@@ -113,9 +118,14 @@ public class Movement : MonoBehaviour
         crouchedCol.enabled = false;
     }
 
-    void Crouched()
+    public void Crouched()
     {
-        StartCoroutine(LerpCamera(camController.crouchedCamPos.position, 0.09f));
+        if (lerpCam != null)
+        {
+            StopCoroutine(lerpCam);
+        }
+
+        lerpCam = StartCoroutine(LerpCamera(camController.crouchedCamPos, crouchSpeed));
         maxSpeed = 5f;
 
         isCrouched = true;
@@ -123,18 +133,20 @@ public class Movement : MonoBehaviour
         crouchedCol.enabled = true;
     }
 
-    IEnumerator LerpCamera(Vector3 targetPos, float duration)
+    IEnumerator LerpCamera(Transform targetPos, float duration)
     {
+        isCamLerping = true;
         float time = 0;
-        Vector3 camPos = camController.cam.transform.position;
+        Vector3 initialPos = camController.cam.transform.position;
 
         while (time < duration)
         {
-            camController.cam.transform.position = Vector3.Lerp(camPos, targetPos, time / duration);
+            camController.cam.transform.position = Vector3.Slerp(initialPos, targetPos.position, time / duration);
             time += Time.deltaTime;
             yield return null;
         }
-        camController.cam.transform.position = targetPos;
+        camController.cam.transform.position = targetPos.position;
+        isCamLerping = false;
     }
 
     void GroundedCheck()

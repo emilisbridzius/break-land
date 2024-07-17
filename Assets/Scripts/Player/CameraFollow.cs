@@ -8,16 +8,21 @@ public class CameraFollow : MonoBehaviour
     public Movement move;
     public FirstPersonCam fps;
 
-    private void Update()
-    {
-        if (move.isCrouched)
-        {
-            cam.transform.position = fps.crouchedCamPos.position;
-        }
+    public float smoothingFactor;
 
-        if (!move.isCrouched)
+    private void LateUpdate()
+    {
+        if (move.isCamLerping)
         {
-            cam.transform.position = fps.camPos.position;
+            // If camera is lerping, still follow the player smoothly
+            Vector3 targetPos = move.isCrouched ? fps.crouchedCamPos.position : fps.camPos.position;
+            cam.transform.position = Vector3.Slerp(cam.transform.position, targetPos, Time.deltaTime * smoothingFactor); // Adjust the smoothing factor as needed
+        }
+        else
+        {
+            // Directly follow the player's position
+            Vector3 targetPos = move.isCrouched ? fps.crouchedCamPos.position : fps.camPos.position;
+            cam.transform.position = targetPos;
         }
     }
 }
