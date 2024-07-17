@@ -5,7 +5,9 @@ using UnityEngine;
 public class FirstPersonCam : MonoBehaviour
 {
     [SerializeField] float xSensitivity, ySensitivity, bobSpeed, bobAmount;
-    [SerializeField] Transform orientation, cameraPos;
+    public Transform orientation, camPos, crouchedCamPos;
+    public Camera cam;
+    public Movement move;
 
     float xRotation, yRotation, defaultPosY;
     float timer = 0f;
@@ -16,6 +18,8 @@ public class FirstPersonCam : MonoBehaviour
         Cursor.visible = false;
 
         defaultPosY = transform.localPosition.y;
+
+        cam = GetComponent<Camera>();
     }
 
     private void Update()
@@ -28,7 +32,7 @@ public class FirstPersonCam : MonoBehaviour
         xRotation -= mouseY;
 
         // prevent breaking your neck
-        xRotation = Mathf.Clamp(xRotation, -90f, 90);
+        xRotation = Mathf.Clamp(xRotation, -89f, 89);
 
         // rotate cam and orientation
         transform.rotation = Quaternion.Euler(xRotation, yRotation, 0);
