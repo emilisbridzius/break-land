@@ -38,26 +38,27 @@ public class FirstPersonCam : MonoBehaviour
         transform.rotation = Quaternion.Euler(xRotation, yRotation, 0);
         orientation.rotation = Quaternion.Euler(0, yRotation, 0);
 
+        //Bobbing();
     }
 
-    //void Bobbing()
-    //{
-    //    float horizontalInput = Input.GetAxis("Horizontal");
-    //    float verticalInput = Input.GetAxis("Vertical");
+    void Bobbing()
+    {
+        float horizontalInput = Input.GetAxis("Horizontal");
+        float verticalInput = Input.GetAxis("Vertical");
 
-    //    if (Mathf.Abs(verticalInput) > 0.1f || Mathf.Abs(horizontalInput) > 0.1f)
-    //    {
-    //        // Player is moving
-    //        timer += Time.deltaTime * bobSpeed;
-    //        float newY = defaultPosY + Mathf.Sin(timer) * bobAmount;
-    //        transform.localPosition = new Vector3(transform.localPosition.x, newY, transform.localPosition.z);
-    //    }
-    //    else
-    //    {
-    //        // Idle
-    //        timer = 0;
-    //        float newY = Mathf.Lerp(transform.localPosition.y, defaultPosY, bobSpeed);
-    //        transform.localPosition = new Vector3(transform.localPosition.x, newY, transform.localPosition.z);
-    //    }
-    //}
+        if (Mathf.Abs(verticalInput) > 0.1f || Mathf.Abs(horizontalInput) > 0.1f)
+        {
+            // Player is moving
+            timer += Time.deltaTime * bobSpeed;
+            float newY = defaultPosY + Mathf.Sin(timer) * bobAmount;
+            transform.localPosition = new Vector3(transform.localPosition.x, newY, transform.localPosition.z);
+        }
+        else
+        {
+            // Idle
+            timer = 0;
+            float newY = Mathf.Lerp(transform.localPosition.y, defaultPosY, bobSpeed);
+            transform.localPosition = new Vector3(transform.localPosition.x, newY, transform.localPosition.z);
+        }
+    }
 }
