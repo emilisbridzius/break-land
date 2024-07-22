@@ -9,7 +9,7 @@ public class Movement : MonoBehaviour
     [SerializeField] float jumpHeight, crouchSpeed, slideForce;
     [SerializeField] Transform playerInputSpace, feet, head;
     public FirstPersonCam camController;
-    public Collider standingCol, crouchedCol;
+    public CapsuleCollider standingCol;
 
     public float groundRayMaxDist, ceilingRayMaxDist;
     public LayerMask groundLayer, obstructionLayer;
@@ -25,7 +25,6 @@ public class Movement : MonoBehaviour
     {
         body = GetComponent<Rigidbody>();
         standingCol.enabled = true;
-        crouchedCol.enabled = false;
     }
 
     void Update()
@@ -118,8 +117,9 @@ public class Movement : MonoBehaviour
 
         isCrouched = false;
         isSliding = false;
-        standingCol.enabled = true;
-        crouchedCol.enabled = false;
+
+        standingCol.height = 2;
+        standingCol.center = new Vector3(0f, 0f, 0f);
     }
 
     public void Crouched()
@@ -133,8 +133,8 @@ public class Movement : MonoBehaviour
         maxSpeed = 5f;
 
         isCrouched = true;
-        standingCol.enabled = false;
-        crouchedCol.enabled = true;
+        standingCol.height = 1;
+        standingCol.center = new Vector3(0f, -0.51f, 0f);
     }
 
     private IEnumerator Slide()

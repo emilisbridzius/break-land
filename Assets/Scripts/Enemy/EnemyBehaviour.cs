@@ -87,22 +87,14 @@ public class EnemyBehaviour : MonoBehaviour
 
     public void Update()
     {
-        if (!canSeePlayer && !hasSeenPlayer)
+        if (!canSeePlayer)
         {
-            //enemyAgent.isStopped = true;
+            enemyAgent.isStopped = true;
         }
-
-        if (canSeePlayer)
-        {
-            if (!hasSeenPlayer)
-            {
-                hasSeenPlayer = true;
-            }
-        }
-
-        if (hasSeenPlayer)
+        else
         {
             Running();
+            enemyAgent.isStopped = false;
             enemyAgent.SetDestination(playerPos.position);
         }
 
