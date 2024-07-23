@@ -1,25 +1,31 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class PlayerHealth : MonoBehaviour
 {
-    public float health;
-    public float maxHealth;
-    public float stamina;
-    public float maxStamina;
-    [SerializeField] Image healthBar, staminaBar;
+    public TextMeshProUGUI healthCount;
+    public TextMeshProUGUI manaCount;
+
+    public float health, mana;
+    public float maxHealth, maxMana;
 
     private void Start()
     {
         health = maxHealth;
-        stamina = maxStamina;
+        mana = maxMana;
     }
 
     private void Update()
     {
-        healthBar.fillAmount = health;
-        staminaBar.fillAmount = stamina;
+        UpdateGUI();
+    }
+
+    public void UpdateGUI()
+    {
+        healthCount.text = health.ToString("F0");
+        manaCount.text = mana.ToString("F0");
     }
 }

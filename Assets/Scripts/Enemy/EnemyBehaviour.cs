@@ -16,16 +16,21 @@ public class EnemyBehaviour : MonoBehaviour
     public GameObject playerRef;
     public Transform playerPos;
     public Transform enemyAgentTransform, modelForward;
+    public Rigidbody enemyRigidbody;
 
     [Header("NavMesh + LayerMask Settings")]
     public NavMeshAgent enemyAgent;
     public LayerMask targetMask;
     public LayerMask obstructionMask;
 
-    [Header("Debugging Tools for FOV")]
-    [SerializeField] public bool canSeePlayer;
-    public bool hasSeenPlayer;
+    [Header("Attack Settings")]
+    public BoxCollider attackRange;
+    public float attackCooldown;
+    public float attackWhenInRangeFor;
+    public int attackDamage;
 
+    [Header("Debugging Tools for FOV")]
+    public bool canSeePlayer;
     public Animator anim;
 
     private void Start()
@@ -34,6 +39,7 @@ public class EnemyBehaviour : MonoBehaviour
         playerPos = playerRef.gameObject.transform;
 
         enemyAgentTransform = transform;
+        enemyRigidbody = GetComponent<Rigidbody>();
 
         StartCoroutine(FOVRoutine());
     }
@@ -87,17 +93,32 @@ public class EnemyBehaviour : MonoBehaviour
 
     public void Update()
     {
+        VelocityCheck();
+
         if (!canSeePlayer)
         {
             enemyAgent.isStopped = true;
         }
-        else
+        else if (canSeePlayer)
         {
             Running();
             enemyAgent.isStopped = false;
             enemyAgent.SetDestination(playerPos.position);
         }
 
+    }
+    void VelocityCheck()
+    {
+        Vector3 enemyVelocity = enemyRigidbody.velocity;
+
+        if (enemyVelocity.x == 0 || enemyVelocity.z == 0)
+        {
+            Idle();
+        }
+        else
+        {
+            Running();
+        }
     }
 
     void Idle()
@@ -109,4 +130,11 @@ public class EnemyBehaviour : MonoBehaviour
     {
         anim.SetBool("isMoving", true);
     }
+
+    void Attack()
+    {
+        anim.SetTrigger("doAttack");
+
+    }
+
 }

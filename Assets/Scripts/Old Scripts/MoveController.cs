@@ -78,7 +78,7 @@ public class MoveController : MonoBehaviour
             }
 
    # region Dodging ifs 
-            if (Input.GetKeyDown(KeyCode.LeftShift) && canBackstep && pHealth.stamina >= 0.2f)
+            if (Input.GetKeyDown(KeyCode.LeftShift) && canBackstep)
             {
                 currentPos = rb.position;
                 dodgeDestination = currentPos += -model.forward * backstepPower;
@@ -87,7 +87,7 @@ public class MoveController : MonoBehaviour
                 StartCoroutine(Backstep(dodgeDestination, .8f));
             }
 
-            if (Input.GetKeyDown(KeyCode.LeftShift) && canDodge && pHealth.stamina >= 0.3f)
+            if (Input.GetKeyDown(KeyCode.LeftShift) && canDodge)
             {
                 currentPos = rb.position;
                 anim.SetTrigger("dodge");

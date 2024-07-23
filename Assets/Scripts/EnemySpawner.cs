@@ -26,7 +26,7 @@ public class EnemySpawner : MonoBehaviour
         if (gameManager != null)
         {
             // Adjust spawn interval based on the current round
-            currentSpawnInterval = Mathf.Max(0.5f, baseSpawnInterval * Mathf.Pow(spawnRateIncreaseFactor, gameManager.roundCount - 1));
+            //currentSpawnInterval = Mathf.Max(0.5f, baseSpawnInterval * Mathf.Pow(spawnRateIncreaseFactor, gameManager.roundCount - 1));
         }
     }
 
