@@ -8,6 +8,7 @@ TagManager:
   - Enemy
   - Collide
   - Ground
+  - PlayerCollider
   layers:
   - Default
   - TransparentFX

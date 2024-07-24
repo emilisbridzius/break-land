@@ -93,32 +93,25 @@ public class EnemyBehaviour : MonoBehaviour
 
     public void Update()
     {
-        VelocityCheck();
-
         if (!canSeePlayer)
         {
             enemyAgent.isStopped = true;
-        }
-        else if (canSeePlayer)
-        {
-            Running();
-            enemyAgent.isStopped = false;
-            enemyAgent.SetDestination(playerPos.position);
-        }
-
-    }
-    void VelocityCheck()
-    {
-        Vector3 enemyVelocity = enemyRigidbody.velocity;
-
-        if (enemyVelocity.x == 0 || enemyVelocity.z == 0)
-        {
             Idle();
         }
-        else
+        
+        if (canSeePlayer && enemyAgent.remainingDistance > 2f)
         {
+            enemyAgent.isStopped = false;
+            enemyAgent.SetDestination(playerPos.position);
             Running();
         }
+        else if (enemyAgent.remainingDistance < 2f)
+        {
+            //enemyAgent.isStopped = true;
+            Idle();
+        }
+
+        print(enemyAgent.remainingDistance);
     }
 
     void Idle()
@@ -131,7 +124,7 @@ public class EnemyBehaviour : MonoBehaviour
         anim.SetBool("isMoving", true);
     }
 
-    void Attack()
+    public void Attack()
     {
         anim.SetTrigger("doAttack");
 

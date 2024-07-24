@@ -5,13 +5,16 @@ using UnityEngine.AI;
 
 public class RagdollController : MonoBehaviour
 {
-
+    public BoxCollider rangeCollider;
+     
     private void Awake()
     {
         setRigidbodyState(true);
         setColliderState(false);
         GetComponent<Animator>().enabled = true;
         GetComponent<NavMeshAgent>().enabled = true;
+
+        rangeCollider.enabled = true;
     }
 
     void Update()
@@ -25,6 +28,8 @@ public class RagdollController : MonoBehaviour
         GetComponent<NavMeshAgent>().enabled = false;
         setRigidbodyState(false);
         setColliderState(true);
+
+        rangeCollider.enabled = false;
     }
 
     void setRigidbodyState(bool state)
