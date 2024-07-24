@@ -14,7 +14,6 @@ public class PlayerAttack : MonoBehaviour
     public RaycastHit hit;
 
     public FireMagic fireMagic;
-    public MoveController move;
 
     public float projSpeed;
     public int projDamage;
@@ -63,10 +62,7 @@ public class PlayerAttack : MonoBehaviour
     {
         if (fireMage)
         {
-            move.anim.SetTrigger("attackT1");
-            fireMagic.Tier2Fire();
-            move.model.rotation = Quaternion.LookRotation(normalizedDirection);
-            //fireMagic.Tier1Fire();
+            fireMagic.Tier1Fire();
         }
     }
 

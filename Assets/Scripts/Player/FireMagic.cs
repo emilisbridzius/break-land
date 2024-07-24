@@ -5,10 +5,9 @@ using UnityEngine;
 public class FireMagic : MonoBehaviour
 {
     public GameObject fireball;
-    public Rigidbody rb;
+    Rigidbody rb;
 
     public PlayerAttack attack;
-    public MoveController move;
     public MagicBehaviour magic;
 
     // Start is called before the first frame update

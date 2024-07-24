@@ -99,13 +99,13 @@ public class EnemyBehaviour : MonoBehaviour
             Idle();
         }
         
-        if (canSeePlayer && enemyAgent.remainingDistance > 2f)
+        if (canSeePlayer && enemyAgent.remainingDistance > 0.1f)
         {
             enemyAgent.isStopped = false;
             enemyAgent.SetDestination(playerPos.position);
             Running();
         }
-        else if (enemyAgent.remainingDistance < 2f)
+        else
         {
             //enemyAgent.isStopped = true;
             Idle();
