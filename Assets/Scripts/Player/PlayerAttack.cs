@@ -63,6 +63,7 @@ public class PlayerAttack : MonoBehaviour
         if (fireMage)
         {
             fireMagic.Tier1Fire();
+            fireMagic.Tier2Fire();
         }
     }
 

@@ -9,9 +9,10 @@ public class LockOnCanvas : MonoBehaviour
     public Image targetIndicator;
     public PlayerAttack attack;
 
-    float minScale = 0.5f;
+    float minScale = 0.05f;
     float maxScale = 1.0f;
-    float maxDistance = 10f;
+    public float maxDistance = 10f;
+    public float indicatorRotSpeed;
 
     void Start()
     {
@@ -20,7 +21,7 @@ public class LockOnCanvas : MonoBehaviour
 
     void Update()
     {
-        if (attack.targetLock.GetChild(1).GetComponent<Renderer>().isVisible)
+        if (attack.targetLock.GetComponentInChildren<Renderer>().isVisible)
         {
             targetIndicator.enabled = true;
             UpdateIndicatorPosition();
@@ -38,5 +39,10 @@ public class LockOnCanvas : MonoBehaviour
 
         targetIndicator.transform.localScale = new Vector2(scaleFactor, scaleFactor);
         targetIndicator.transform.position = camPos;
+
+        if (targetIndicator != null)
+        {
+            targetIndicator.rectTransform.Rotate(Vector3.forward, indicatorRotSpeed * Time.deltaTime);
+        }
     }
 }

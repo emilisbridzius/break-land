@@ -16,10 +16,10 @@ public class Movement : MonoBehaviour
     public bool canJump, canStand;
     public bool isGrounded, isCrouched, isCamLerping, isSliding;
 
-    Vector3 velocity, desiredVelocity, upAxis;
+    Vector3 velocity, desiredVelocity;
     Rigidbody body;
-    RaycastHit abovePlayer;
     Coroutine lerpCam, slideRoutine;
+    Ray upRay;
 
     private void Start()
     {
@@ -81,8 +81,6 @@ public class Movement : MonoBehaviour
     {
         if (!isSliding)
         {
-            upAxis = -Physics.gravity.normalized;
-
             velocity = body.velocity;
             float maxSpeedChange = maxAcceleration * Time.deltaTime;
 
@@ -137,6 +135,12 @@ public class Movement : MonoBehaviour
         standingCol.center = new Vector3(0f, -0.51f, 0f);
     }
 
+    /// <summary>
+    /// Manipulate object velocity directly to make the object travel forward until slideDuration is reached.
+    /// </summary>
+    /// <returns>
+    /// IEnumerator returns null until the slide has been completed.
+    /// </returns>
     private IEnumerator Slide()
     {
         isSliding = true;
@@ -150,12 +154,19 @@ public class Movement : MonoBehaviour
         {
             slideTimer += Time.deltaTime;
             float slideProgress = slideTimer / slideDuration;
-            body.velocity = Vector3.Lerp(slideVelocity, Vector3.zero, slideProgress);
-            body.AddForce(Vector3.down * 10f);
+            body.velocity = Vector3.Slerp(slideVelocity, Physics.gravity, slideProgress);
             yield return null;
         }
     }
 
+    /// <summary>
+    /// Manipulate camera position directly to make it smoothly interpolate to the targetPos with a given duration.
+    /// </summary>
+    /// <param name="targetPos">The desired position of the camera.</param>
+    /// <param name="duration">The total duration for which the camera will take to move to the desired position.</param>
+    /// <returns>
+    /// IEnumerator returns null until the camera reaches the targetPos.
+    /// </returns>
     IEnumerator LerpCamera(Transform targetPos, float duration)
     {
         isCamLerping = true;
@@ -172,6 +183,9 @@ public class Movement : MonoBehaviour
         isCamLerping = false;
     }
 
+    /// <summary>
+    /// Fire a raycast from a given position to check if the position is close enough to an object layer.
+    /// </summary>
     void GroundedCheck()
     {
         if (Physics.Raycast(feet.position, Vector3.down, groundRayMaxDist, groundLayer))
@@ -188,7 +202,9 @@ public class Movement : MonoBehaviour
 
     void CeilingCheck()
     {
-        if (Physics.SphereCast(head.transform.position, 0.5f, Vector3.up, out abovePlayer, ceilingRayMaxDist, obstructionLayer))
+        upRay = new Ray(head.transform.position, Vector3.up);
+
+        if (Physics.SphereCast(upRay, 0.5f, ceilingRayMaxDist, obstructionLayer))
         {
             canStand = false;
         }

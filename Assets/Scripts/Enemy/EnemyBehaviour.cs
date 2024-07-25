@@ -99,7 +99,7 @@ public class EnemyBehaviour : MonoBehaviour
             Idle();
         }
         
-        if (canSeePlayer && enemyAgent.remainingDistance > 0.1f)
+        if (canSeePlayer && Vector3.Distance(enemyAgent.transform.position, playerPos.position) > 2.3f)
         {
             enemyAgent.isStopped = false;
             enemyAgent.SetDestination(playerPos.position);
@@ -107,11 +107,11 @@ public class EnemyBehaviour : MonoBehaviour
         }
         else
         {
-            //enemyAgent.isStopped = true;
+            enemyAgent.isStopped = true;
             Idle();
         }
 
-        print(enemyAgent.remainingDistance);
+        //print(Vector3.Distance(enemyAgent.transform.position, playerPos.position));
     }
 
     void Idle()
