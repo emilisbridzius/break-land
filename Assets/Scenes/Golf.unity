@@ -417,12 +417,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 261907423}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.25, z: 1}
+  m_LocalPosition: {x: 0, y: -0.25, z: 2.487}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 612666307}
-  m_RootOrder: 2
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &285474488
 MeshFilter:
@@ -873,8 +873,8 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1655741299}
-  - {fileID: 8362586864946681894}
   - {fileID: 261907424}
+  - {fileID: 8362586864946681894}
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -933,7 +933,7 @@ MonoBehaviour:
   groundSpawnPos: {fileID: 0}
   cam: {fileID: 612666306}
   fireMagic: {fileID: 612666311}
-  projSpeed: 10
+  projSpeed: 0.01
   projDamage: 50
   fireMage: 1
   airMage: 0
@@ -954,7 +954,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   fireball: {fileID: 9205712973179209110, guid: 1706377e9349ccd4f997a67fa723b2e1, type: 3}
   attack: {fileID: 612666310}
-  magic: {fileID: 0}
+  magic: {fileID: 612666312}
 --- !u!114 &612666312
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -967,12 +967,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b374fec76637e524aa6d3930bbc13734, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  master: {fileID: 0}
+  master: {fileID: 612666310}
   spike: {fileID: 0}
   groundSpawn: {fileID: 0}
   spikesToSpawn: 10
   boundsLength: 0
   boundsWidth: 0
+  fireProjCurveSpeed: 1000
 --- !u!1 &707997866
 GameObject:
   m_ObjectHideFlags: 0
@@ -3453,7 +3454,7 @@ GameObject:
   - component: {fileID: 2118515952}
   m_Layer: 0
   m_Name: Cube
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -7914,7 +7915,7 @@ Transform:
   - {fileID: 6834529848344563009}
   - {fileID: 3870516210098987232}
   m_Father: {fileID: 612666307}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &8398964729705335433
 Transform:
@@ -7994,10 +7995,10 @@ GameObject:
   - component: {fileID: 8947710181792835115}
   - component: {fileID: 8947710181792835114}
   - component: {fileID: 8947710181792835116}
+  - component: {fileID: 8947710181792835117}
   - component: {fileID: 8947710181792835113}
   - component: {fileID: 8947710181792835126}
   - component: {fileID: 8947710181792835112}
-  - component: {fileID: 8947710181792835117}
   m_Layer: 0
   m_Name: Enemy2
   m_TagString: Enemy
@@ -8129,7 +8130,7 @@ CapsuleCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8603977194812226701}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: fbdae83819aaf2f4caa70c994930850f, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
   m_Radius: 0.3
@@ -8190,8 +8191,8 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 128
   attackRange: {fileID: 1525152819}
-  attackCooldown: 1.2
-  attackWhenInRangeFor: 0.8
+  attackCooldown: 1
+  attackWhenInRangeFor: 0.4
   attackDamage: 10
   canSeePlayer: 0
   anim: {fileID: 8947710181792835112}
@@ -8241,7 +8242,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8603977194812226701}
   m_LocalRotation: {x: -0, y: 1, z: -0, w: 0.0000029504295}
-  m_LocalPosition: {x: 25.054, y: 3.759, z: -12.416}
+  m_LocalPosition: {x: 22.72, y: 3.759, z: -12.416}
   m_LocalScale: {x: 1.1183132, y: 1.1183132, z: 1.1183132}
   m_ConstrainProportionsScale: 0
   m_Children:

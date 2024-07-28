@@ -29,7 +29,7 @@ public class FireMagic : MonoBehaviour
         
         if (attack.targetLock != null)
         {
-            rb.AddForce(attack.normalizedDirection * attack.projSpeed, ForceMode.Impulse);
+            magic.HMCR();
         }
         else
         {

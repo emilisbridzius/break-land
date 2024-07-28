@@ -40,10 +40,14 @@ public class PlayerAttack : MonoBehaviour
     {
         Physics.Raycast(cam.transform.position, cam.transform.forward, out hit, Mathf.Infinity);
 
-        if (hit.collider != null && hit.collider.transform.CompareTag("Enemy"))
+        if (hit.collider != null && hit.collider.GetComponentInParent<EnemyHealth>().health > 0)
         {
-            targetLock = hit.transform;
+            targetLock = hit.transform.GetComponentInParent<Transform>();
             GetTargetPosition();
+        }
+        else
+        {
+            targetLock = null;
         }
     }
 
@@ -58,15 +62,14 @@ public class PlayerAttack : MonoBehaviour
         normalizedDirection = direction;
     }
 
+    
+
     void Attack()
     {
         if (fireMage)
         {
             fireMagic.Tier1Fire();
-            fireMagic.Tier2Fire();
+            //fireMagic.Tier2Fire();
         }
     }
-
- 
-   
 }

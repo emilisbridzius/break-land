@@ -16,18 +16,20 @@ public class LockOnCanvas : MonoBehaviour
 
     void Start()
     {
-        targetIndicator.enabled = false;
+        targetIndicator.gameObject.SetActive(false);
     }
 
     void Update()
     {
-        if (attack.targetLock.GetComponentInChildren<Renderer>().isVisible)
+        if (attack.targetLock.GetComponentInParent<EnemyHealth>().health > 0)
         {
-            targetIndicator.enabled = true;
+            targetIndicator.gameObject.SetActive(true);
             UpdateIndicatorPosition();
-            print("enemy visible");
         }
-        else { targetIndicator.enabled = false; }
+        else
+        {
+            targetIndicator.gameObject.SetActive(false);
+        }
     }
 
     void UpdateIndicatorPosition()

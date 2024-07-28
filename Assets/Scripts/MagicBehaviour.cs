@@ -12,7 +12,7 @@ public class MagicBehaviour : MonoBehaviour
     public Transform groundSpawn;
     Bounds spawnBounds;
     public int spikesToSpawn = 10;
-    public float boundsLength, boundsWidth;
+    public float boundsLength, boundsWidth, fireProjCurveSpeed;
     List<Transform> enemies = new List<Transform>();
 
     Vector3 startPos, endPos, midPoint, randomDir, curvePoint;
@@ -21,7 +21,7 @@ public class MagicBehaviour : MonoBehaviour
     void Awake()
     {
         step = 0.0f;
-        master = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerAttack>();
+        master = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<PlayerAttack>();
     }
 
     void Update()
@@ -37,16 +37,14 @@ public class MagicBehaviour : MonoBehaviour
         while (step < 1.0f)
         {
             transform.position = MoveAlongBezierCurvePoint(step, startPos, curvePoint, endPos);
-            step += Time.deltaTime * master.projSpeed;
+            step += Time.deltaTime * fireProjCurveSpeed;
             yield return null;
         }
-        targetPos.GetComponent<EnemyHealth>().health -= master.projDamage;
-        Destroy(gameObject);
     }
 
     void CreateCurvePoint()
     {
-        startPos = transform.position;
+        startPos = master.spawnPos.position;
         endPos = master.targetLock.position;
         midPoint = (startPos + endPos) / 2;
 

@@ -7,15 +7,9 @@ public class FireballCollision : MonoBehaviour
     public PlayerAttack attack;
 
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
-        attack  = GameObject.FindWithTag("Player").GetComponent<PlayerAttack>();
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        attack = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<PlayerAttack>();
     }
 
     public void OnCollisionEnter(Collision collision)
@@ -25,8 +19,6 @@ public class FireballCollision : MonoBehaviour
             var enemyHealth = collision.gameObject.GetComponent<EnemyHealth>();
             enemyHealth.health -= attack.projDamage; 
             Destroy(gameObject);
-
-            
         }
     }
 }
