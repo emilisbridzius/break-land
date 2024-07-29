@@ -9,6 +9,7 @@ TagManager:
   - Collide
   - Ground
   - PlayerCollider
+  - Wing
   layers:
   - Default
   - TransparentFX

@@ -6,6 +6,7 @@ using UnityEngine.AI;
 public class RagdollController : MonoBehaviour
 {
     public BoxCollider rangeCollider;
+    public BoxCollider[] wingColliders;
     public float explosionForce, upwardsModifier;
 
     private void Awake()
@@ -16,6 +17,7 @@ public class RagdollController : MonoBehaviour
         GetComponent<NavMeshAgent>().enabled = true;
 
         rangeCollider.enabled = true;
+        foreach (var collider in wingColliders) { collider.enabled = true; }
     }
 
     void Update()
@@ -65,7 +67,6 @@ public class RagdollController : MonoBehaviour
         foreach(Rigidbody body in bodies)
         {
             body.AddExplosionForce(explosionForce, transform.position, 1f, upwardsModifier, ForceMode.Impulse);
-
         }
     }
 }

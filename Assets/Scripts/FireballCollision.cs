@@ -15,7 +15,15 @@ public class FireballCollision : MonoBehaviour
 
     public void OnCollisionEnter(Collision collision)
     {
-        if (collision.collider.CompareTag("Enemy"))
+        if (collision.collider.CompareTag("Wing"))
+        {
+            var wingHealth = collision.gameObject.GetComponent<WingsHealth>();
+            wingHealth.health -= attack.projDamage;
+            Instantiate(explosionEffect, transform.position, Quaternion.identity);
+            Destroy(gameObject);
+        }
+
+        if (collision.collider.CompareTag("Enemy") && collision.collider.GetComponent<EnemyHealth>().canBeDamaged)
         {
             var enemyHealth = collision.gameObject.GetComponent<EnemyHealth>();
             enemyHealth.health -= attack.projDamage;
