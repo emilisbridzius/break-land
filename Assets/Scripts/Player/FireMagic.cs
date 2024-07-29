@@ -26,15 +26,7 @@ public class FireMagic : MonoBehaviour
     {
         GameObject fire = Instantiate(fireball, attack.spawnPos.position, Quaternion.identity);
         rb = fire.GetComponent<Rigidbody>();
-        
-        if (attack.targetLock != null)
-        {
-            magic.HMCR();
-        }
-        else
-        {
-            rb.AddForce(attack.spawnPos.transform.forward * attack.projSpeed, ForceMode.Impulse);
-        }
+        rb.AddForce(attack.spawnPos.forward * attack.projSpeed, ForceMode.Impulse);
     }
 
     public void Tier2Fire()

@@ -10,7 +10,6 @@ public class MoveController : MonoBehaviour
     [SerializeField] float moveSpeed, jumpForce, jumpCD, rayMaxDist, dodgePower, dodgeCD, dodgeSpeed, backstepPower;
     [SerializeField] Rigidbody rb;
     public Transform camOrientation, orientation, model, feet;
-    [SerializeField] PlayerHealth pHealth;
     public Animator anim;
     AnimationCurve dodgeCurve, backstepCurve;
     [SerializeField] AudioManager audioM;

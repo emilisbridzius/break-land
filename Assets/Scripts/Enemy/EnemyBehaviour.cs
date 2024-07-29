@@ -95,8 +95,7 @@ public class EnemyBehaviour : MonoBehaviour
     {
         if (!canSeePlayer)
         {
-            enemyAgent.isStopped = true;
-            Idle();
+            canSeePlayer = true;
         }
         
         if (canSeePlayer && Vector3.Distance(enemyAgent.transform.position, playerPos.position) > 2.3f)

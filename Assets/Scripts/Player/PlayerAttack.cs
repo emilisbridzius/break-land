@@ -28,7 +28,7 @@ public class PlayerAttack : MonoBehaviour
 
     private void Update()
     {
-        TargetCheck();
+        //TargetCheck();
 
         if (Input.GetKeyDown(KeyCode.Mouse0))
         {

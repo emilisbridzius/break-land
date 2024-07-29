@@ -5,6 +5,7 @@ using UnityEngine;
 public class FireballCollision : MonoBehaviour
 {
     public PlayerAttack attack;
+    public GameObject explosionEffect;
 
     // Start is called before the first frame update
     void Awake()
@@ -17,7 +18,13 @@ public class FireballCollision : MonoBehaviour
         if (collision.collider.CompareTag("Enemy"))
         {
             var enemyHealth = collision.gameObject.GetComponent<EnemyHealth>();
-            enemyHealth.health -= attack.projDamage; 
+            enemyHealth.health -= attack.projDamage;
+            Instantiate(explosionEffect, transform.position, Quaternion.identity);
+            Destroy(gameObject);
+        }
+        else
+        {
+            Instantiate(explosionEffect, transform.position, Quaternion.identity);
             Destroy(gameObject);
         }
     }
