@@ -1,3 +1,4 @@
+using RPGCharacterAnims.Actions;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,7 +7,7 @@ public class Movement : MonoBehaviour
 {
     [SerializeField, Range(0f, 100f)] float maxSpeed = 10f;
     [SerializeField, Range(0f, 100f)] float maxAcceleration = 100f;
-    [SerializeField] float jumpHeight, crouchSpeed, slideForce, wallRunSpeed, wallRunDuration, wallRunGravity;
+    [SerializeField] float jumpHeight, crouchSpeed, slideForce, wallRunSpeed, wallRunDuration, wallRunGravity, wallRunCooldown;
     public Transform playerInputSpace, feet, head, wallContact;
     public FirstPersonCam camController;
     public CapsuleCollider standingCol;
@@ -17,10 +18,12 @@ public class Movement : MonoBehaviour
     public bool isGrounded, isCrouched, isCamLerping, isSliding, isWallRunning;
     public Vector3 wallNormal;
     public Rigidbody body;
+    public Vector3 contactToTangent, wallTangent;
 
     Vector3 velocity, desiredVelocity;
     Coroutine lerpCam, slideRoutine, wallRunRoutine;
     Ray upRay;
+    float wallRunTimer = 1.5f;
 
     private void Start()
     {
@@ -32,6 +35,7 @@ public class Movement : MonoBehaviour
     {
         GroundedCheck();
         CeilingCheck();
+        Timers();
 
         Vector2 playerInput;
 
@@ -57,9 +61,22 @@ public class Movement : MonoBehaviour
             Jump();
         }
 
-        if (Input.GetKey(KeyCode.W) && canWallRun && wallContact != null)
+        if (Input.GetKey(KeyCode.W) && canWallRun && wallContact != null && !isWallRunning && wallRunTimer <= 0)
         {
             wallRunRoutine = StartCoroutine(WallRun());
+        }
+        else if (Input.GetKeyUp(KeyCode.W) && isWallRunning)
+        {
+            Standing();
+            body.useGravity = true;
+            isWallRunning = false;
+        }
+        else if (Input.GetKeyDown(KeyCode.Space) && isWallRunning)
+        {
+            Standing();
+            body.useGravity = true;
+            isWallRunning = false;
+            Jump();
         }
 
         if (Input.GetKey(KeyCode.LeftShift))
@@ -103,6 +120,12 @@ public class Movement : MonoBehaviour
         body.velocity = velocity;
     }
 
+    void WallJump()
+    {
+        velocity.y += Mathf.Sqrt(2 * jumpHeight * (-Physics.gravity.y * 0.5f));
+        body.velocity = velocity;
+    }
+
     public void Standing()
     {
         if (lerpCam != null)
@@ -116,12 +139,19 @@ public class Movement : MonoBehaviour
             isSliding = false;
         }
 
+        if (wallRunRoutine != null)
+        {
+            StopCoroutine(wallRunRoutine);
+            isWallRunning = false;
+        }
+
         lerpCam = StartCoroutine(LerpCamera(camController.camPos, crouchSpeed));
         maxSpeed = 10f;
 
         isCrouched = false;
         isSliding = false;
         canJump = true;
+        wallRunTimer = wallRunCooldown;
         standingCol.height = 2;
         standingCol.center = new Vector3(0f, 0f, 0f);
     }
@@ -162,7 +192,7 @@ public class Movement : MonoBehaviour
         {
             slideTimer += Time.deltaTime;
             float slideProgress = slideTimer / slideDuration;
-            body.velocity = Vector3.Slerp(slideVelocity, Physics.gravity, slideProgress);
+            body.velocity = Vector3.Lerp(slideVelocity, Physics.gravity, slideProgress);
             yield return null;
         }
         isSliding = false;
@@ -171,24 +201,26 @@ public class Movement : MonoBehaviour
 
     IEnumerator WallRun()
     {
+        print("start wall run");
         isWallRunning = true;
         canJump = true;
-        float wallRunDuration = 1.5f;
+        canWallRun = false;
         float wallRunTimer = 0f;
 
-        Vector3 tempGrav = Physics.gravity / 10;
+        Vector3 tempGrav = Physics.gravity * wallRunGravity;
 
-        Vector3 wallRunVelocity = wallContact.right * wallRunSpeed;
+        Vector3 wallRunVelocity = wallTangent * wallRunSpeed;
         body.velocity = new Vector3(wallRunVelocity.x, body.velocity.y, wallRunVelocity.z);
 
         while (wallRunTimer < wallRunDuration)
         {
             wallRunTimer += Time.deltaTime;
             float wallRunProgress = wallRunTimer / wallRunDuration;
-            body.velocity = Vector3.Slerp(wallRunVelocity, tempGrav, wallRunProgress);
-            body.mass = 0.001f;
+            body.velocity = Vector3.Lerp(wallRunVelocity, tempGrav, wallRunProgress);
+            body.useGravity = false;
             yield return null;
         }
+        body.useGravity = true;
         isWallRunning = false;
     }
 
@@ -255,6 +287,14 @@ public class Movement : MonoBehaviour
             {
                 Standing();
             }
+        }
+    }
+
+    void Timers()
+    {
+        if (wallRunTimer > 0)
+        {
+            wallRunTimer -= Time.deltaTime;
         }
     }
 }

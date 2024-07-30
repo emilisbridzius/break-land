@@ -5,6 +5,7 @@ using UnityEngine;
 public class WallDetection : MonoBehaviour
 {
     public Movement move;
+    public FirstPersonCam cam;
 
     private void Start()
     {
@@ -15,6 +16,11 @@ public class WallDetection : MonoBehaviour
         }
     }
 
+    private void Update()
+    {
+        LedgeSweep();
+    }
+
     private void OnCollisionEnter(Collision collision)
     {
         // Check if the collision is significant enough to consider it a wall contact
@@ -22,6 +28,7 @@ public class WallDetection : MonoBehaviour
         {
             move.wallContact = collision.transform; // Store the wall object
             move.canWallRun = true;
+            move.wallTangent = Vector3.ProjectOnPlane(cam.transform.forward, move.contactToTangent);
             Debug.Log("Contact with wall detected: " + move.wallContact.name);
         }
     }
@@ -48,17 +55,28 @@ public class WallDetection : MonoBehaviour
     {
         // Define the logic to determine if the collision is with a wall
         // For simplicity, we consider any contact that isn't too small or too large
-        // as a wall contact. Adjust this according to your game's needs.
+        // as a wall contact.
 
         foreach (ContactPoint contact in collision.contacts)
         {
             // Example: Consider it a wall if the contact point's normal is roughly vertical
             if (Mathf.Abs(Vector3.Dot(contact.normal, Vector3.up)) < 0.1f)
             {
+                move.contactToTangent = contact.normal;
                 return true; // This means the contact is more horizontal, indicating a wall
             }
         }
 
+        return false;
+    }
+
+    void LedgeSweep()
+    {
+        
+    }
+
+    private bool isLedge()
+    {
         return false;
     }
 }
