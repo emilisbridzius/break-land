@@ -5,37 +5,40 @@ using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.UIElements;
 
-public class BossBehaviour : MonoBehaviour
+public class RangedEnemyBehaviour : MonoBehaviour
 {
     [Header("FOV Settings")]
     public float radius;
     [Range(0, 360)]
     public float angle;
-    public bool chasePlayer;
 
     [Header("GameObj + Transform Ref")]
     public GameObject playerRef;
-    public Vector3 playerPos;
-    public Transform enemyAgentTransform;
+    public Transform playerPos;
+    public Transform enemyAgentTransform, modelForward;
+    public Rigidbody enemyRigidbody;
 
     [Header("NavMesh + LayerMask Settings")]
     public NavMeshAgent enemyAgent;
     public LayerMask targetMask;
     public LayerMask obstructionMask;
 
+    [Header("Attack Settings")]
+    public GameObject attackProjectile;
+    public float attackCooldown;
+    public int attackDamage;
+
     [Header("Debugging Tools for FOV")]
     public bool canSeePlayer;
-    public bool inAttackRange;
-
     public Animator anim;
 
     private void Start()
     {
-        playerRef = GameObject.FindGameObjectWithTag("Player");
-        playerPos = playerRef.transform.position;
+        playerRef = GameObject.Find("Player");
+        playerPos = playerRef.gameObject.transform;
+
         enemyAgentTransform = transform;
-        enemyAgent = GetComponent<NavMeshAgent>();
-        anim = GetComponentInChildren<Animator>();
+        enemyRigidbody = GetComponent<Rigidbody>();
 
         StartCoroutine(FOVRoutine());
     }
@@ -69,29 +72,66 @@ public class BossBehaviour : MonoBehaviour
                 {
                     canSeePlayer = true;
                 }
+                else
+                {
+                    canSeePlayer = false;
+                }
             }
+            else
+            {
+                canSeePlayer = false;
+            }
+
+        }
+        else if (canSeePlayer)
+        {
+            canSeePlayer = false;
         }
     }
+
 
     public void Update()
     {
-        playerPos = playerRef.transform.position;
+        if (!canSeePlayer)
+        {
+            canSeePlayer = true;
+        }
 
-        if (canSeePlayer)
+        if (canSeePlayer && Vector3.Distance(enemyAgent.transform.position, playerPos.position) > 2.3f)
         {
-            anim.SetBool("isMoving", true);
-            MoveAndFacePos(playerPos);
+            enemyAgent.isStopped = false;
+            enemyAgent.SetDestination(playerPos.position);
+            Running();
         }
-        else if (!canSeePlayer)
+        else
         {
-            anim.SetBool("isMoving", false);
+            enemyAgent.isStopped = true;
+            Idle();
         }
+
+        SetVerticalPosition();
     }
 
-    public void MoveAndFacePos(Vector3 toPos)
+    public void SetVerticalPosition()
     {
-        toPos.y = enemyAgentTransform.position.y;
-        enemyAgentTransform.LookAt(toPos);
-        enemyAgent.SetDestination(toPos);
+        Vector3 currentHeight = new Vector3(transform.position.x, transform.position.y, transform.position.z);
+        currentHeight.y += 10f;
     }
+
+    void Idle()
+    {
+        anim.SetBool("isMoving", false);
+    }
+
+    void Running()
+    {
+        anim.SetBool("isMoving", true);
+    }
+
+    public void Attack()
+    {
+        anim.SetTrigger("doAttack");
+
+    }
+
 }

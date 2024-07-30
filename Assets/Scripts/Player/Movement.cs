@@ -6,19 +6,20 @@ public class Movement : MonoBehaviour
 {
     [SerializeField, Range(0f, 100f)] float maxSpeed = 10f;
     [SerializeField, Range(0f, 100f)] float maxAcceleration = 100f;
-    [SerializeField] float jumpHeight, crouchSpeed, slideForce;
-    [SerializeField] Transform playerInputSpace, feet, head;
+    [SerializeField] float jumpHeight, crouchSpeed, slideForce, wallRunSpeed, wallRunDuration, wallRunGravity;
+    public Transform playerInputSpace, feet, head, wallContact;
     public FirstPersonCam camController;
     public CapsuleCollider standingCol;
 
     public float groundRayMaxDist, ceilingRayMaxDist;
     public LayerMask groundLayer, obstructionLayer;
-    public bool canJump, canStand;
-    public bool isGrounded, isCrouched, isCamLerping, isSliding;
+    public bool canJump, canStand, canWallRun;
+    public bool isGrounded, isCrouched, isCamLerping, isSliding, isWallRunning;
+    public Vector3 wallNormal;
+    public Rigidbody body;
 
     Vector3 velocity, desiredVelocity;
-    Rigidbody body;
-    Coroutine lerpCam, slideRoutine;
+    Coroutine lerpCam, slideRoutine, wallRunRoutine;
     Ray upRay;
 
     private void Start()
@@ -56,6 +57,11 @@ public class Movement : MonoBehaviour
             Jump();
         }
 
+        if (Input.GetKey(KeyCode.W) && canWallRun && wallContact != null)
+        {
+            wallRunRoutine = StartCoroutine(WallRun());
+        }
+
         if (Input.GetKey(KeyCode.LeftShift))
         {
             if (isGrounded && body.velocity.magnitude > 0.7f)
@@ -79,7 +85,7 @@ public class Movement : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (!isSliding)
+        if (!isSliding && !isWallRunning)
         {
             velocity = body.velocity;
             float maxSpeedChange = maxAcceleration * Time.deltaTime;
@@ -115,7 +121,7 @@ public class Movement : MonoBehaviour
 
         isCrouched = false;
         isSliding = false;
-
+        canJump = true;
         standingCol.height = 2;
         standingCol.center = new Vector3(0f, 0f, 0f);
     }
@@ -131,6 +137,7 @@ public class Movement : MonoBehaviour
         maxSpeed = 5f;
 
         isCrouched = true;
+        canJump = false;
         standingCol.height = 1;
         standingCol.center = new Vector3(0f, -0.51f, 0f);
     }
@@ -141,9 +148,10 @@ public class Movement : MonoBehaviour
     /// <returns>
     /// IEnumerator returns null until the slide has been completed.
     /// </returns>
-    private IEnumerator Slide()
+    IEnumerator Slide()
     {
         isSliding = true;
+        canJump = false;
         float slideDuration = 1.5f;
         float slideTimer = 0f;
 
@@ -157,6 +165,31 @@ public class Movement : MonoBehaviour
             body.velocity = Vector3.Slerp(slideVelocity, Physics.gravity, slideProgress);
             yield return null;
         }
+        isSliding = false;
+        canJump = true;
+    }
+
+    IEnumerator WallRun()
+    {
+        isWallRunning = true;
+        canJump = true;
+        float wallRunDuration = 1.5f;
+        float wallRunTimer = 0f;
+
+        Vector3 tempGrav = Physics.gravity / 10;
+
+        Vector3 wallRunVelocity = wallContact.right * wallRunSpeed;
+        body.velocity = new Vector3(wallRunVelocity.x, body.velocity.y, wallRunVelocity.z);
+
+        while (wallRunTimer < wallRunDuration)
+        {
+            wallRunTimer += Time.deltaTime;
+            float wallRunProgress = wallRunTimer / wallRunDuration;
+            body.velocity = Vector3.Slerp(wallRunVelocity, tempGrav, wallRunProgress);
+            body.mass = 0.001f;
+            yield return null;
+        }
+        isWallRunning = false;
     }
 
     /// <summary>
@@ -191,12 +224,18 @@ public class Movement : MonoBehaviour
         if (Physics.Raycast(feet.position, Vector3.down, groundRayMaxDist, groundLayer))
         {
             isGrounded = true;
-            canJump = true;
+            canWallRun = false;
+
+            if (!isSliding)
+            {
+                canJump = true;
+            }
         }
         else
         {
             isGrounded = false;
             canJump = false;
+            canWallRun = true;
         }
     }
 

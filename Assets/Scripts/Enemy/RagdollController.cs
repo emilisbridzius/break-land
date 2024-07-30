@@ -17,6 +17,8 @@ public class RagdollController : MonoBehaviour
         GetComponent<NavMeshAgent>().enabled = true;
 
         rangeCollider.enabled = true;
+
+
         foreach (var collider in wingColliders) { collider.enabled = true; }
     }
 

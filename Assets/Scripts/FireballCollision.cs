@@ -17,7 +17,7 @@ public class FireballCollision : MonoBehaviour
     {
         if (collision.collider.CompareTag("Wing"))
         {
-            var wingHealth = collision.gameObject.GetComponent<WingsHealth>();
+            var wingHealth = collision.collider.GetComponent<WingsHealth>();
             wingHealth.health -= attack.projDamage;
             Instantiate(explosionEffect, transform.position, Quaternion.identity);
             Destroy(gameObject);

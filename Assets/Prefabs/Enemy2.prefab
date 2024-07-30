@@ -3136,7 +3136,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &8947710180706324882
 Transform:
   m_ObjectHideFlags: 0
@@ -3188,6 +3188,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rangeCollider: {fileID: 2131237219414154446}
+  wingColliders: []
   explosionForce: 50
   upwardsModifier: 50
 --- !u!114 &8947710180706324873

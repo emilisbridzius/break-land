@@ -9,7 +9,7 @@ public class EnemyHealth : MonoBehaviour
 {
     RagdollController ragdoll;
     PlayerTimer timer;
-    public GameObject[] wings;
+    public List<GameObject> wings = new List<GameObject>();
 
     public int health;
     public int maxHealth;
@@ -27,7 +27,7 @@ public class EnemyHealth : MonoBehaviour
 
     private void Update()
     {    
-        if (wings.Length == 0)
+        if (wings.Count == 0)
         {
             canBeDamaged = true;
         }
