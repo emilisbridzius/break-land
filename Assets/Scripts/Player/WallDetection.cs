@@ -18,7 +18,7 @@ public class WallDetection : MonoBehaviour
 
     private void Update()
     {
-        LedgeSweep();
+
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -28,7 +28,7 @@ public class WallDetection : MonoBehaviour
         {
             move.wallContact = collision.transform; // Store the wall object
             move.canWallRun = true;
-            move.wallTangent = Vector3.ProjectOnPlane(cam.transform.forward, move.contactToTangent);
+            move.wallTangent = Vector3.ProjectOnPlane(cam.transform.forward, move.contactToTangent).normalized;
             Debug.Log("Contact with wall detected: " + move.wallContact.name);
         }
     }
@@ -67,16 +67,6 @@ public class WallDetection : MonoBehaviour
             }
         }
 
-        return false;
-    }
-
-    void LedgeSweep()
-    {
-        
-    }
-
-    private bool isLedge()
-    {
         return false;
     }
 }
