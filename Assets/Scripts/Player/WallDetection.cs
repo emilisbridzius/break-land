@@ -54,12 +54,12 @@ public class WallDetection : MonoBehaviour
     private bool IsWall(Collision collision)
     {
         // Define the logic to determine if the collision is with a wall
-        // For simplicity, we consider any contact that isn't too small or too large
+        // For simplicity, consider any contact that isn't too small or too large
         // as a wall contact.
 
         foreach (ContactPoint contact in collision.contacts)
         {
-            // Example: Consider it a wall if the contact point's normal is roughly vertical
+            // Consider it a wall if the contact point's normal is roughly horizontal
             if (Mathf.Abs(Vector3.Dot(contact.normal, Vector3.up)) < 0.1f)
             {
                 move.contactToTangent = contact.normal;

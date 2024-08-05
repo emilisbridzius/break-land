@@ -16,10 +16,9 @@ public class RagdollController : MonoBehaviour
         GetComponent<Animator>().enabled = true;
         GetComponent<NavMeshAgent>().enabled = true;
 
-        rangeCollider.enabled = true;
-
-
         foreach (var collider in wingColliders) { collider.enabled = true; }
+
+        rangeCollider.enabled = true;
     }
 
     void Update()

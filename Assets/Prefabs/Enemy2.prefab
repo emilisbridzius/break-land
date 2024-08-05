@@ -3136,7 +3136,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &8947710180706324882
 Transform:
   m_ObjectHideFlags: 0
@@ -3172,7 +3172,7 @@ MonoBehaviour:
   wings: []
   health: 1
   maxHealth: 100
-  timeGain: 0
+  timeGain: 4
   hasDied: 0
   canBeDamaged: 1
 --- !u!114 &8947710180706324879
